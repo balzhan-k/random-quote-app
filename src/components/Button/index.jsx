@@ -1,16 +1,7 @@
-import './styles.css';
-
-export const Button = ( {label, handleOnClick}) => {
+export const Button = ({ label, handleOnClick }) => {
   return (
-  <button
-    className="btn"
-    onClick={handleOnClick}>
-    {label}
-  </button>
+    <button className="nextBtn" onClick={handleOnClick}>
+      {label}
+    </button>
   );
-}
-
-
-
-
-
+};

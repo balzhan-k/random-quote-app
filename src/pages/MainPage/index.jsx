@@ -1,18 +1,20 @@
 import { QuoteCard } from "../../components/QuoteCard";
 import { Button } from "../../components/Button";
-import {  useQuotesContext,
-  useQuotesDispatchContext } from '../../QuotesContextProvider';
-import { useQuoteIndexContext, useQuoteIndexDispatchContext} from '../../QuoteIndexContextProvider';
+import {
+  useQuotesContext,
+  useQuotesDispatchContext,
+} from "../../QuotesContextProvider";
+import {
+  useQuoteIndexContext,
+  useQuoteIndexDispatchContext,
+} from "../../QuoteIndexContextProvider";
 import { useEffect } from "react";
 
-
-export const MainPage = ({ updateLikeCount}) => {
+export const MainPage = ({ updateLikeCount }) => {
   const quotes = useQuotesContext();
   const setQuotes = useQuotesDispatchContext();
   const currentIndex = useQuoteIndexContext();
   const dispatchQuoteIndex = useQuoteIndexDispatchContext();
-
-
 
   function handleNextQuoteClick() {
     const randomIndex = Math.floor(Math.random() * quotes.length);
@@ -29,7 +31,6 @@ export const MainPage = ({ updateLikeCount}) => {
     );
   }
 
-
   return (
     <main>
       <QuoteCard
@@ -38,11 +39,14 @@ export const MainPage = ({ updateLikeCount}) => {
         likeCount={quotes[currentIndex]?.likeCount}
       />
 
-      <button className="like-button" onClick={updateLikeCount}>
+      <button
+        className="likeButton"
+        onClick={updateLikeCount}
+      >
         ♡
       </button>
 
       <Button label="Next Quote" handleOnClick={handleNextQuoteClick} />
     </main>
-   );
-}
+  );
+};

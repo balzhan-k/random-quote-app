@@ -1,26 +1,2 @@
-.App {
-  text-align: center;
-}
 
-.buttons-container {
-  margin-top: 20px;
-}
 
-.like-button {
-  padding: 10px 20px;
-  font-size: 1.1em;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  margin: 10px;
-  transition: background-color 0.3s ease;
-}
-
-.like-button {
-  background-color: #ff5f5f;
-  color: white;
-}
-
-.like-button:hover {
-  background-color: #ff3333;
-}

@@ -12,7 +12,7 @@ function App() {
   const [currentPage, setCurrentPage] = useState(pages.home);
 
   return (
-    <div className="App">
+    <div className="text-center">
       <nav>
         <ul>
           <li>
