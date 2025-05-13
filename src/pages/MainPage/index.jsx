@@ -32,7 +32,7 @@ export const MainPage = ({ updateLikeCount }) => {
   }
 
   return (
-    <main>
+    <main >
       <QuoteCard
         quote={quotes[currentIndex]?.quote}
         author={quotes[currentIndex]?.author}
