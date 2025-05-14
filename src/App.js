@@ -12,16 +12,22 @@ function App() {
   const [currentPage, setCurrentPage] = useState(pages.home);
 
   return (
-    <div className="text-center font-sans bg-sky-200">
-      <nav>
-        <ul>
+    <div className="text-center font-sans bg-green-700 min-h-screen">
+      <nav className=" bg-gray-100 shadow-md">
+        <ul className="flex justify-center space-x-6 p-4">
           <li>
-            <button onClick={() => setCurrentPage(pages.home)}>
+            <button
+              className="text-gray-700 font-semibold hover:text-blue-600 transition"
+              onClick={() => setCurrentPage(pages.home)}
+            >
               {pages.home}
             </button>
           </li>
           <li>
-            <button onClick={() => setCurrentPage(pages.profile)}>
+            <button
+              className="text-gray-700 font-semibold hover:text-blue-600 transition"
+              onClick={() => setCurrentPage(pages.profile)}
+            >
               {pages.profile}
             </button>
           </li>
