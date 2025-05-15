@@ -2,15 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-
-
 .QuoteCard {
-   @apply bg-gray-100 p-8 rounded-lg shadow-md w-1/2 my-5 mx-auto transition-transform duration-300 ease-in-out hover:scale-105;
-}
-.likeButton {
-  @apply text-xs font-extrabold rounded-lg m-2 cursor-pointer text-red-400 py-2 px-3   tracking-wider border hover:bg-red-400 transform hover:scale-125 hover:text-white transition ease-out duration-300;
+  @apply bg-green-50 p-4 sm:p-8 rounded-2xl m-5 mx-auto w-[70%]  transition-transform duration-300 ease-in-out hover:shadow-lg hover:scale-[1.02];
 }
 
 .nextBtn {
-  @apply bg-gray-300 rounded-lg py-2 px-3 uppercase text-xs font-bold cursor-pointer tracking-wider hover:shadow-inner transform hover:scale-110 hover:bg-opacity-50 duration-300;
+  @apply flex items-center justify-center gap-2 bg-green-600 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-md transition hover:bg-green-700 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-green-400;
+}
+
+.likeButton {
+  @apply p-2 hover:bg-red-500 hover:scale-110 transition-all;
 }

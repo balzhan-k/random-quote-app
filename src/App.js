@@ -13,11 +13,11 @@ function App() {
 
   return (
     <div className="text-center font-sans bg-green-700 min-h-screen">
-      <nav className=" bg-gray-100 shadow-md">
+      <nav className=" bg-green-50 shadow-md ">
         <ul className="flex justify-center space-x-6 p-4">
           <li>
             <button
-              className="text-gray-700 font-semibold hover:text-blue-600 transition"
+              className="text-gray-700 font-semibold hover:text-green-700 transition"
               onClick={() => setCurrentPage(pages.home)}
             >
               {pages.home}
@@ -25,7 +25,7 @@ function App() {
           </li>
           <li>
             <button
-              className="text-gray-700 font-semibold hover:text-blue-600 transition"
+              className="text-gray-700 font-semibold hover:text-green-700 transition"
               onClick={() => setCurrentPage(pages.profile)}
             >
               {pages.profile}
