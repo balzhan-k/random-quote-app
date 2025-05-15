@@ -5,7 +5,7 @@
 
 
 .QuoteCard {
-   @apply bg-gray-100 p-8 rounded-lg shadow-md w-1/2 my-5 mx-auto transition-transform duration-300 ease-in-out hover:scale-105 ;
+   @apply bg-gray-100 p-8 rounded-lg shadow-md w-1/2 my-5 mx-auto transition-transform duration-300 ease-in-out hover:scale-105;
 }
 .likeButton {
   @apply text-xs font-extrabold rounded-lg m-2 cursor-pointer text-red-400 py-2 px-3   tracking-wider border hover:bg-red-400 transform hover:scale-125 hover:text-white transition ease-out duration-300;

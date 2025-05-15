@@ -32,17 +32,14 @@ export const MainPage = ({ updateLikeCount }) => {
   }
 
   return (
-    <main className=''>
+    <main className="">
       <QuoteCard
         quote={quotes[currentIndex]?.quote}
         author={quotes[currentIndex]?.author}
         likeCount={quotes[currentIndex]?.likeCount}
       />
 
-      <button
-        className="likeButton"
-        onClick={updateLikeCount}
-      >
+      <button className="likeButton" onClick={updateLikeCount}>
         ♡
       </button>
 
