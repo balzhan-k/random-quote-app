@@ -1,10 +1,24 @@
-import { createContext, useState, useContext, useEffect } from "react";
-import { quotes as initialQuotes} from "./quotes.js";
+import {
+  createContext,
+  useState,
+  useContext,
+  useEffect,
+  Dispatch,
+} from "react";
+import { quotes as initialQuotes } from "./quotes";
+import { ReactNode } from "react";
+import { Quote } from "./types";
 
-export const QuotesContext = createContext(undefined);
-export const QuotesDispatchContext = createContext(undefined);
+export const QuotesContext = createContext<Quote[] | undefined>(undefined);
+export const QuotesDispatchContext = createContext<
+  React.Dispatch<React.SetStateAction<Quote[]>> | undefined
+>(undefined);
 
-export const QuotesContextProvider = ({children}) => {
+export const QuotesContextProvider = ({
+  children,
+}: {
+  children: ReactNode;
+}) => {
   const [quotes, setQuotes] = useState(() => {
     const saved = localStorage.getItem("quotes");
     return saved ? JSON.parse(saved) : initialQuotes;
@@ -16,14 +30,13 @@ export const QuotesContextProvider = ({children}) => {
   }, [quotes]);
 
   return (
-  <QuotesContext value={quotes}>
-    <QuotesDispatchContext value={setQuotes}>
-      {children}
-    </QuotesDispatchContext>
-  </QuotesContext>
-  )
+    <QuotesContext.Provider value={quotes}>
+      <QuotesDispatchContext.Provider value={setQuotes}>
+        {children}
+      </QuotesDispatchContext.Provider>
+    </QuotesContext.Provider>
+  );
 };
-
 
 export const useQuotesContext = () => useContext(QuotesContext);
 export const useQuotesDispatchContext = () => useContext(QuotesDispatchContext);

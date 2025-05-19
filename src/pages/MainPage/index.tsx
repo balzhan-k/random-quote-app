@@ -1,19 +1,11 @@
 import { QuoteCard } from "../../components/QuoteCard";
 
-import {
-  useQuotesContext
-} from "../../QuotesContextProvider";
-import {
-  useQuoteIndexContext
-} from "../../QuoteIndexContextProvider";
+import { useQuotesContext } from "../../QuotesContextProvider";
+import { useQuoteIndexContext } from "../../QuoteIndexContextProvider";
 
 export const MainPage = () => {
-  const quotes = useQuotesContext();
-
-  const currentIndex = useQuoteIndexContext();
-
-
-
+  const quotes = useQuotesContext() ?? [];
+  const currentIndex = useQuoteIndexContext() ?? 0;
 
   return (
     <main className="">
@@ -22,8 +14,6 @@ export const MainPage = () => {
         author={quotes[currentIndex]?.author}
         likeCount={quotes[currentIndex]?.likeCount}
       />
-
-
     </main>
   );
 };

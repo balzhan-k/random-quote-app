@@ -1,5 +1,10 @@
 // components/Button.jsx
-export const Button = ({ label, handleOnClick }) => {
+interface ButtonProps {
+  label: string;
+  handleOnClick: () => void;
+}
+
+export const Button = ({ label, handleOnClick }: ButtonProps) => {
   return (
     <button onClick={handleOnClick} className="nextBtn">
       {label}

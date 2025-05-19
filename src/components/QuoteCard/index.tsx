@@ -1,4 +1,4 @@
-import { Button } from "../../components/Button";
+import { Button } from "../Button";
 import {
   useQuotesContext,
   useQuotesDispatchContext,
@@ -8,19 +8,21 @@ import {
   useQuoteIndexDispatchContext,
 } from "../../QuoteIndexContextProvider";
 import { useState } from "react";
+import { Quote } from "../../types";
 
-export const QuoteCard = ({ quote, author, likeCount }) => {
+export const QuoteCard = ({ quote, author, likeCount } : Quote) => {
   const quotes = useQuotesContext();
   const currentIndex = useQuoteIndexContext();
   const setQuotes = useQuotesDispatchContext();
-  const dispatchQuoteIndex = useQuoteIndexDispatchContext();
+  const dispatchQuoteIndex = useQuoteIndexDispatchContext() || ((index: number) => {});
 
   const [liked, setLiked] = useState(false);
   const [isBouncing, setIsBouncing] = useState(false);
 
   function handleNextQuoteClick() {
+    if (!quotes) return;
     const randomIndex = Math.floor(Math.random() * quotes.length);
-    dispatchQuoteIndex(randomIndex);
+    dispatchQuoteIndex && dispatchQuoteIndex(randomIndex);
     setLiked(false);
   }
 
@@ -29,13 +31,14 @@ export const QuoteCard = ({ quote, author, likeCount }) => {
     setLiked(true);
     setIsBouncing(true);
 
-    setQuotes((prevQuotes) =>
-      prevQuotes.map((quote, index) =>
-        index === currentIndex
-          ? { ...quote, likeCount: quote.likeCount + 1 }
-          : quote
-      )
-    );
+    setQuotes &&
+      setQuotes((prevQuotes) =>
+        prevQuotes.map((quote, index) =>
+          index === currentIndex
+            ? { ...quote, likeCount: quote.likeCount + 1 }
+            : quote
+        )
+      );
     setTimeout(() => setIsBouncing(false), 300);
   }
   return (
