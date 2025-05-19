@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    // Broad browser support
+    "lib": ["dom", "dom.iterable", "esnext"],
+    // Modern JS + browser APIs
+    "allowJs": true,
+     // Allows using .js files temporarily
+    "skipLibCheck": true,
+    // Faster builds
+    "esModuleInterop": true,
+    // Import CommonJS modules
+    "allowSyntheticDefaultImports": true,
+    // Enables default imports
+    "strict": true,
+    // All strict type checks
+    "forceConsistentCasingInFileNames": true,
+    // Enforce import path case-sensitivity
+    "noFallthroughCasesInSwitch": true,
+    // Avoid bugs in switch statements
+    "module": "esnext",
+    // Modern module system
+    "moduleResolution": "node",
+     // Resolve like Node.js
+    "resolveJsonModule": true,
+    // Allows importing `.json` files
+    "isolatedModules": true,
+    // Required for projects using Babel or React Scripts
+    "noEmit": true,
+    // Don’t output .js files — rely on bundler
+    "jsx": "react-jsx"
+     // React 17+ JSX transform
+  },
+  "include": ["src"]
+}
