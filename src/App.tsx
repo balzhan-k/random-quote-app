@@ -15,7 +15,7 @@ function App() {
   return (
     <div className="class text-center font-sans bg-green-700 min-h-screen">
       <nav className="bg-green-50 shadow-md ">
-        <ul className="flex justify-end space-x-6 p-4 max-w-5xl">
+        <ul className="flex justify-end space-x-6 p-4 xl:max-w-5xl">
           {allPages.map((page) => (
             <li>
               <button
@@ -26,11 +26,9 @@ function App() {
               </button>
             </li>
           ))}
-
-
         </ul>
       </nav>
-      {currentPage === Page.home && (<MainPage />)}
+      {currentPage === Page.home && <MainPage />}
       {currentPage === Page.profile && <ProfilePage />}
     </div>
   );

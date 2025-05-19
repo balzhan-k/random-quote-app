@@ -5,6 +5,5 @@ export const ProfilePage = () => {
       <div>Use information placeholder...</div>
       <h2>Liked quotes</h2>
     </main>
-   );
-}
-
+  );
+};
