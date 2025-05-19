@@ -1,7 +1,7 @@
 import "./App.css";
 import { useState } from "react";
-import { ProfilePage } from "./pages/ProfilePage/index.jsx";
-import { MainPage } from "./pages/MainPage/index.jsx";
+import { ProfilePage } from "./pages/ProfilePage/index.js";
+import { MainPage } from "./pages/MainPage/index.js";
 
 const pages = {
   home: "Home",
