@@ -5,7 +5,10 @@ interface ButtonProps {
 
 export const Button = ({ label, handleClick }: ButtonProps) => {
   return (
-    <button onClick={handleClick} className="nextBtn">
+    <button
+      onClick={handleClick}
+      className="flex items-center gap-2 bg-green-700 text-white px-4 py-2 rounded-full hover:bg-green-800 transition-colors"
+    >
       {label}
       <svg
         xmlns="http://www.w3.org/2000/svg"
