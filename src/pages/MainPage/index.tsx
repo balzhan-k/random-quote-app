@@ -16,7 +16,7 @@ export const MainPage = () => {
 
 
   return (
-    <main className="">
+    <main>
       <QuoteCard
         quote={quotes[currentIndex]?.quote}
         author={quotes[currentIndex]?.author}
