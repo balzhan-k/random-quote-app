@@ -1,12 +1,11 @@
-// components/Button.jsx
 interface ButtonProps {
   label: string;
-  handleOnClick: () => void;
+  handleClick: () => void;
 }
 
-export const Button = ({ label, handleOnClick }: ButtonProps) => {
+export const Button = ({ label, handleClick }: ButtonProps) => {
   return (
-    <button onClick={handleOnClick} className="nextBtn">
+    <button onClick={handleClick} className="nextBtn">
       {label}
       <svg
         xmlns="http://www.w3.org/2000/svg"
