@@ -83,7 +83,7 @@ export const QuoteCard = ({ quote, author, likeCount } : Quote) => {
             Likes: {likeCount}
           </p>
         </div>
-        <Button label="Next Quote" handleOnClick={handleNextQuoteClick} />
+        <Button label="Next Quote" handleClick={handleNextQuoteClick} />
       </div>
     </section>
   );
