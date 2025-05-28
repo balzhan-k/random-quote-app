@@ -8,7 +8,7 @@ export const MainPage = () => {
   const currentIndex = useQuoteIndexContext() ?? 0;
 
   return (
-    <main className="">
+    <main>
       <QuoteCard
         quote={quotes[currentIndex]?.quote}
         author={quotes[currentIndex]?.author}

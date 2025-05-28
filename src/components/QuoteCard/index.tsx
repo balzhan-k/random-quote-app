@@ -42,23 +42,21 @@ export const QuoteCard = ({ quote, author, likeCount } : Quote) => {
     setTimeout(() => setIsBouncing(false), 300);
   }
   return (
-    <section className="QuoteCard">
-      <div className="text-green-700 text-xl ">
+    <section className="text-green-700 bg-green-50 p-10 sm:p-8 rounded-2xl m-14 mx-auto  w-[90%] sm:w-[80%] md:w-[70%] max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl  transition-transform duration-300 ease-in-out hover:shadow-lg hover:scale-[1.02]">
+      <div className=" text-xl ">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="32"
           height="32"
           fill="currentColor"
           viewBox="0 0 256 256"
-          className="text-green-700 rotate-180"
+          className=" rotate-180"
         >
           <path d="M116,72v88a48.05,48.05,0,0,1-48,48,8,8,0,0,1,0-16,32,32,0,0,0,32-32v-8H40a16,16,0,0,1-16-16V72A16,16,0,0,1,40,56h60A16,16,0,0,1,116,72ZM216,56H156a16,16,0,0,0-16,16v64a16,16,0,0,0,16,16h60v8a32,32,0,0,1-32,32,8,8,0,0,0,0,16,48.05,48.05,0,0,0,48-48V72A16,16,0,0,0,216,56Z"></path>
         </svg>
-        <p className="text-green-700 text-xl text-left">{quote}</p>
+        <p className=" text-xl text-left">{quote}</p>
       </div>
-      <p className="mt-3 text-xs tracking-wide text-green-700 text-left">
-        {author}
-      </p>
+      <p className="mt-3 text-xs tracking-wide  text-left">{author}</p>
       <div className="flex justify-between items-center mt-4">
         <div className="flex items-center gap-2 border border-green-700 rounded-full px-1">
           <button
