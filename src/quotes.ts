@@ -21,7 +21,7 @@ export const quotes : Quote[] = [
     likeCount: 0,
   },
   {
-    quote: "It always seems impossible until it’s done.",
+    quote: "It always seems impossible until it's done.",
     author: "Nelson Mandela",
     likeCount: 0,
   },
@@ -66,7 +66,7 @@ export const quotes : Quote[] = [
     likeCount: 0,
   },
   {
-    quote: "You miss 100% of the shots you don’t take.",
+    quote: "You miss 100% of the shots you don't take.",
     author: "Wayne Gretzky",
     likeCount: 0,
   },
@@ -76,7 +76,7 @@ export const quotes : Quote[] = [
     likeCount: 0,
   },
   {
-    quote: "Don’t wait. The time will never be just right.",
+    quote: "Don't wait. The time will never be just right.",
     author: "Napoleon Hill",
     likeCount: 0,
   },
@@ -107,7 +107,7 @@ export const quotes : Quote[] = [
   },
   {
     quote:
-      "It’s not the years in your life that count. It’s the life in your years.",
+      "It's not the years in your life that count. It's the life in your years.",
     author: "Abraham Lincoln",
     likeCount: 0,
   },
@@ -117,7 +117,7 @@ export const quotes : Quote[] = [
     likeCount: 0,
   },
   {
-    quote: "Believe you can and you’re halfway there.",
+    quote: "Believe you can and you're halfway there.",
     author: "Theodore Roosevelt",
     likeCount: 0,
   },
@@ -158,17 +158,17 @@ export const quotes : Quote[] = [
     likeCount: 0,
   },
   {
-    quote: "Don’t let yesterday take up too much of today.",
+    quote: "Don't let yesterday take up too much of today.",
     author: "Will Rogers",
     likeCount: 0,
   },
   {
-    quote: "Everything you’ve ever wanted is on the other side of fear.",
+    quote: "Everything you've ever wanted is on the other side of fear.",
     author: "George Addair",
     likeCount: 0,
   },
   {
-    quote: "I have not failed. I’ve just found 10,000 ways that won’t work.",
+    quote: "I have not failed. I've just found 10,000 ways that won't work.",
     author: "Thomas Edison",
     likeCount: 0,
   },
@@ -178,7 +178,7 @@ export const quotes : Quote[] = [
     likeCount: 0,
   },
   {
-    quote: "Don’t be pushed around by the fears in your mind.",
+    quote: "Don't be pushed around by the fears in your mind.",
     author: "Roy T. Bennett",
     likeCount: 0,
   },
@@ -210,22 +210,22 @@ export const quotes : Quote[] = [
   },
   {
     quote:
-      "You can, you should, and if you’re brave enough to start, you will.",
+      "You can, you should, and if you're brave enough to start, you will.",
     author: "Stephen King",
     likeCount: 0,
   },
   {
-    quote: "If at first you don’t succeed, try, try again.",
+    quote: "If at first you don't succeed, try, try again.",
     author: "Thomas H. Palmer",
     likeCount: 0,
   },
   {
-    quote: "It’s kind of fun to do the impossible.",
+    quote: "It's kind of fun to do the impossible.",
     author: "Walt Disney",
     likeCount: 0,
   },
   {
-    quote: "If opportunity doesn’t knock, build a door.",
+    quote: "If opportunity doesn't knock, build a door.",
     author: "Milton Berle",
     likeCount: 0,
   },

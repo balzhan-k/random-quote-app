@@ -1,89 +1,63 @@
-import { Button } from "../Button";
+import { useState } from "react";
 import {
   useQuotesContext,
   useQuotesDispatchContext,
 } from "../../QuotesContextProvider";
-import {
-  useQuoteIndexContext,
-  useQuoteIndexDispatchContext,
-} from "../../QuoteIndexContextProvider";
-import { useState } from "react";
+import { QuotesActionType } from "../../quotesReducer";
 import { Quote } from "../../types";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHeart as faHeartRegular } from '@fortawesome/free-regular-svg-icons';
+import { faHeart as faHeartSolid } from '@fortawesome/free-solid-svg-icons';
 
-export const QuoteCard = ({ quote, author, likeCount } : Quote) => {
+export const QuoteCard = ({ quote, author, likeCount }: Quote) => {
   const quotes = useQuotesContext();
-  const currentIndex = useQuoteIndexContext();
-  const setQuotes = useQuotesDispatchContext();
-  const dispatchQuoteIndex = useQuoteIndexDispatchContext() || ((index: number) => {});
+  const dispatch = useQuotesDispatchContext();
 
-  const [liked, setLiked] = useState(false);
-  const [isBouncing, setIsBouncing] = useState(false);
-
-  function handleNextQuoteClick() {
-    if (!quotes) return;
-    const randomIndex = Math.floor(Math.random() * quotes.length);
-    dispatchQuoteIndex && dispatchQuoteIndex(randomIndex);
-    setLiked(false);
+  // Получаем актуальный likeCount из глобального состояния
+  let actualLikeCount = likeCount;
+  let isLiked = false;
+  if (quotes) {
+    const currentQuoteInContext = quotes.find(q => q.quote === quote);
+    if (currentQuoteInContext) {
+      actualLikeCount = currentQuoteInContext.likeCount;
+      isLiked = currentQuoteInContext.likeCount > 0;
+    }
   }
 
-  function updateLikeCount() {
-    if (liked) return; // prevent multiple likes
-    setLiked(true);
-    setIsBouncing(true);
+  function handleLike() {
+    if (!quotes || !dispatch) return; // Removed currentIndex check
+    // Find the quote by its content as we don't have id in QuoteCard props anymore
+    const currentQuote = quotes.find(q => q.quote === quote);
 
-    setQuotes &&
-      setQuotes((prevQuotes) =>
-        prevQuotes.map((quote, index) =>
-          index === currentIndex
-            ? { ...quote, likeCount: quote.likeCount + 1 }
-            : quote
-        )
-      );
-    setTimeout(() => setIsBouncing(false), 300);
+    if (currentQuote && currentQuote.likeCount === 0) {
+      dispatch({
+        type: QuotesActionType.LIKE_QUOTE,
+        payload: { quote: currentQuote.quote }
+      });
+    }
   }
+
   return (
-    <section className="text-green-700 bg-green-50 p-10 sm:p-8 rounded-2xl m-14 mx-auto  w-[90%] sm:w-[80%] md:w-[70%] max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl  transition-transform duration-300 ease-in-out hover:shadow-lg hover:scale-[1.02]">
-      <div className=" text-xl ">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="32"
-          height="32"
-          fill="currentColor"
-          viewBox="0 0 256 256"
-          className=" rotate-180"
+    <section className="bg-white p-8 rounded-xl max-w-3xl mx-auto shadow-md">
+      <p className="text-3xl font-bold text-left mb-2 text-gray-800">{quote}</p>
+      <p className="text-xl text-gray-600 text-left mb-4">{author}</p>
+
+      <div className="flex items-center gap-2 mt-4">
+        <button
+          onClick={handleLike}
+          disabled={isLiked}
+          className={`p-1 transition ${isLiked ? 'cursor-not-allowed' : ''}`}
+          aria-label="Like this quote"
         >
-          <path d="M116,72v88a48.05,48.05,0,0,1-48,48,8,8,0,0,1,0-16,32,32,0,0,0,32-32v-8H40a16,16,0,0,1-16-16V72A16,16,0,0,1,40,56h60A16,16,0,0,1,116,72ZM216,56H156a16,16,0,0,0-16,16v64a16,16,0,0,0,16,16h60v8a32,32,0,0,1-32,32,8,8,0,0,0,0,16,48.05,48.05,0,0,0,48-48V72A16,16,0,0,0,216,56Z"></path>
-        </svg>
-        <p className=" text-xl text-left">{quote}</p>
-      </div>
-      <p className="mt-3 text-xs tracking-wide  text-left">{author}</p>
-      <div className="flex justify-between items-center mt-4">
-        <div className="flex items-center gap-2 border border-green-700 rounded-full px-1">
-          <button
-            onClick={updateLikeCount}
-            className={`p-2 transition hover:scale-110 ${
-              isBouncing ? "animate-bounce" : ""
-            }`}
-            aria-label="Like this quote"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 256 256"
-              fill={liked ? "#dc2626" : "none"}
-              stroke="#dc2626"
-              strokeWidth="16"
-              className="w-5 h-5"
-            >
-              <path d="M178,40c-20.65,0-38.73,8.88-50,23.89C116.73,48.88,98.65,40,78,40a62.07,62.07,0,0,0-62,62c0,70,103.79,126.66,108.21,129a8,8,0,0,0,7.58,0C136.21,228.66,240,172,240,102A62.07,62.07,0,0,0,178,40Z" />
-            </svg>
-          </button>
-          <p className="text-sm font-medium text-gray-600 p-2">
-            Likes: {likeCount}
-          </p>
-        </div>
-        <Button label="Next Quote" handleClick={handleNextQuoteClick} />
+          <FontAwesomeIcon
+            icon={isLiked ? faHeartSolid : faHeartRegular}
+            className="w-5 h-5"
+            style={{ color: isLiked ? "#dc2626" : "#6b7280" }}
+          />
+        </button>
+        <p className="text-sm text-gray-600">
+          {actualLikeCount}
+        </p>
       </div>
     </section>
   );
