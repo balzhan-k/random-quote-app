@@ -1,14 +1,17 @@
 # 🌟 Random Quote App
 
-Welcome to the **Random Quote App** — a fun and interactive **React** app that displays random quotes and lets you like your favorites! 
+Welcome to the **Random Quote App** — a fun and interactive **React** app that displays random quotes and lets you manage your favorites!
 
 ---
 
 ## ✨ Features
 
-- 💬 **Random Quotes** — Get a fresh, inspirational quote every time you click "Next Quote."
-- ❤️ **Like Button** — Tap the "like" button to show your appreciation for a quote. 
-- 🔒 **Persistent Like Count** — Your likes are saved.
+- 💬 **Random Quotes** — Get a fresh, inspirational quote every time.
+- ❤️ **Like/Dislike Functionality** — Mark quotes as liked or disliked, with persistent storage.
+- 📝 **Quote Creation** — Easily add new quotes to the collection.
+- 🔐 **User Authentication** — Sign Up and Login pages for personalized experience.
+- 👤 **Profile Page** — View and manage your liked quotes.
+- ℹ️ **About Page** — Learn more about the application.
 
 ---
 
@@ -23,20 +26,11 @@ Welcome to the **Random Quote App** — a fun and interactive **React** app that
 
 ---
 
-## 🚀 How It Works
-
-1. 🌀 **Next Quote**: Click the button to see a new random quote.
-2. 👍 **Like Button**: Click the heart icon to add a like to the current quote. 
-
----
-
 ## 📸 Preview
 
-*Here is what the Random Quote App looks like in action:*
+_Here is what the Random Quote App looks like in action:_
 
-<img src="https://github.com/user-attachments/assets/0e534c37-6131-49d8-b150-7c6709c815a9" width="500" /> 
-
-
+<img src="https://github.com/user-attachments/assets/0e534c37-6131-49d8-b150-7c6709c815a9" width="500" />
 
 ---
 
