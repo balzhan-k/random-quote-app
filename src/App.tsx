@@ -5,45 +5,115 @@ import { MainPage } from "./pages/MainPage/index";
 enum Page {
   home = "Home",
   profile = "Profile",
-  about = "About",
+  signup = "Sign Up",
+  login = "Login",
 }
 
 const allPages = Object.values(Page);
 
 function App() {
   const [currentPage, setCurrentPage] = useState<Page>(Page.home);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const handlePageChange = (page: Page) => {
+    setCurrentPage(page);
+    setIsMenuOpen(false);
+  };
 
   return (
     <div className="min-h-screen bg-white text-gray-800 font-sans">
-      <nav className="bg-white shadow-md py-4 px-6 flex justify-between items-center">
-        <div className="flex items-center space-x-2">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-gray-800">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9.006 14.19a2.25 2.25 0 0 0-2.13-1.543H2.25v3.659m1.5-2.25h1.701m4.168-1.077L9.006 14.19a2.25 2.25 0 0 1-2.13-1.543H2.25V7.258m1.5 2.25H5.904m8.168 1.077l.807 1.714a2.25 2.25 0 0 0 2.13 1.543H21.75V8.192m-1.5 2.25h1.701M8.168 11.223l-.807 1.714a2.25 2.25 0 0 1-2.13 1.543H2.25V7.258m1.5 2.25H5.904m8.168 1.077l.807 1.714a2.25 2.25 0 0 0 2.13 1.543H21.75V8.192m-1.5 2.25h1.701" />
-          </svg>
-          <span className="text-xl font-bold cursor-pointer" onClick={() => setCurrentPage(Page.home)}>Quote Fetcher</span>
+      <nav className="bg-white shadow-md py-4 px-4 flex justify-between items-center sm:px-6">
+        <div className="flex items-center justify-between w-full sm:w-auto">
+          <span className="text-lg sm:text-xl font-bold cursor-pointer" onClick={() => handlePageChange(Page.home)}>Quote Fetcher</span>
+          <button
+            className="sm:hidden text-gray-700 focus:outline-none focus:text-blue-600"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label="Toggle navigation"
+          >
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              {isMenuOpen ? (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M6 18L18 6M6 6l12 12"
+                ></path>
+              ) : (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M4 6h16M4 12h16M4 18h16"
+                ></path>
+              )}
+            </svg>
+          </button>
         </div>
-        <ul className="flex space-x-6 items-center">
-          {allPages.filter(page => page !== Page.profile).map((page) => (
+
+        {/* Backdrop for mobile menu */}
+        {isMenuOpen && (
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50 z-30 sm:hidden"
+            onClick={() => setIsMenuOpen(false)}
+          ></div>
+        )}
+
+        {/* Mobile menu / Desktop navigation */}
+        <ul
+          className={`
+            // Mobile styles
+            fixed inset-y-0 right-0 w-[70%] bg-white shadow-lg z-40
+            flex flex-col items-center justify-center space-y-6 pt-16
+            transform transition-transform duration-300 ease-in-out
+            ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'}
+            ${!isMenuOpen && 'hidden'}
+        
+            // Override on sm and up (tablet and desktop)
+            sm:static sm:translate-x-0 sm:flex sm:flex-row sm:space-x-4 sm:space-y-0 sm:w-auto sm:bg-transparent sm:shadow-none sm:pt-0 sm:items-center sm:justify-end sm:z-auto
+          `}
+        >
+          <button
+            className="absolute top-4 right-4 text-gray-700 focus:outline-none sm:hidden"
+            onClick={() => setIsMenuOpen(false)}
+            aria-label="Close navigation"
+          >
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M6 18L18 6M6 6l12 12"
+              ></path>
+            </svg>
+          </button>
+          {allPages.map((page) => (
             <li key={page}>
               <button
-                className="text-gray-700 font-semibold hover:text-blue-600 transition"
-                onClick={() => setCurrentPage(page)}
+                className="text-gray-700 font-semibold hover:text-blue-600 transition text-lg sm:text-base px-4 py-2 rounded-md w-full text-center"
+                onClick={() => handlePageChange(page)}
               >
                 {page}
               </button>
             </li>
           ))}
-          <li>
-            <button className="bg-blue-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-blue-700 transition">Sign Up</button>
-          </li>
-          <li>
-            <button className="border border-gray-300 text-gray-700 px-4 py-2 rounded-md font-semibold hover:bg-gray-50 transition">Login</button>
-          </li>
         </ul>
       </nav>
       {currentPage === Page.home && <MainPage />}
       {currentPage === Page.profile && <ProfilePage />}
-      {currentPage === Page.about && <div>About Page Content</div>}
+      {currentPage === Page.signup && <div>Sign Up Page Content</div>}
+      {currentPage === Page.login && <div>Login Page Content</div>}
     </div>
   );
 }

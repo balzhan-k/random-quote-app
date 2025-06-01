@@ -2,6 +2,7 @@
   "name": "random-quote-app",
   "version": "0.1.0",
   "private": true,
+  "proxy": "https://zenquotes.io",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/free-regular-svg-icons": "^6.7.2",
