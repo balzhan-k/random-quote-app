@@ -5,17 +5,20 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { QuotesContextProvider } from "./QuotesContextProvider";
 import { QuoteIndexContextProvider } from "./QuoteIndexContextProvider";
+import { AuthProvider } from "./AuthContextProvider";
 
 const rootElement = document.getElementById("root");
 if (!rootElement) throw new Error("Failed to find the root element");
 const root = ReactDOM.createRoot(rootElement);
 root.render(
   <React.StrictMode>
-    <QuotesContextProvider>
-      <QuoteIndexContextProvider>
-        <App />
-      </QuoteIndexContextProvider>
-    </QuotesContextProvider>
+    <AuthProvider>
+      <QuotesContextProvider>
+        <QuoteIndexContextProvider>
+          <App />
+        </QuoteIndexContextProvider>
+      </QuotesContextProvider>
+    </AuthProvider>
   </React.StrictMode>
 );
 
