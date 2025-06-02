@@ -1,23 +1,30 @@
 import { useState } from "react";
 import { ProfilePage } from "./pages/ProfilePage/index";
 import { MainPage } from "./pages/MainPage/index";
+import { SignUpPage } from "./pages/SignUpPage";
+import { LoginPage } from "./pages/LoginPage";
+import { useAuth } from "./AuthContextProvider";
 
 enum Page {
   home = "Home",
   profile = "Profile",
-  signup = "Sign Up",
-  login = "Login",
 }
 
 const allPages = Object.values(Page);
 
 function App() {
-  const [currentPage, setCurrentPage] = useState<Page>(Page.home);
+  const [currentPage, setCurrentPage] = useState<Page | string>(Page.home);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { isAuthenticated, logout } = useAuth();
 
   const handlePageChange = (page: Page) => {
     setCurrentPage(page);
     setIsMenuOpen(false);
+  };
+
+  const handleLogout = () => {
+    logout();
+    setCurrentPage(Page.home);
   };
 
   return (
@@ -108,12 +115,42 @@ function App() {
               </button>
             </li>
           ))}
+          {!isAuthenticated && (
+            <li key="login">
+              <button
+                className="text-gray-700 font-semibold hover:text-blue-600 transition text-lg sm:text-base px-4 py-2 rounded-md w-full text-center"
+                onClick={() => setCurrentPage("Login")}
+              >
+                Login
+              </button>
+            </li>
+          )}
+          {!isAuthenticated && (
+            <li key="signup">
+              <button
+                className="text-gray-700 font-semibold hover:text-blue-600 transition text-lg sm:text-base px-4 py-2 rounded-md w-full text-center"
+                onClick={() => setCurrentPage("Sign Up")}
+              >
+                Sign Up
+              </button>
+            </li>
+          )}
+          {isAuthenticated && (
+            <li key="logout">
+              <button
+                className="text-gray-700 font-semibold hover:text-blue-600 transition text-lg sm:text-base px-4 py-2 rounded-md w-full text-center"
+                onClick={handleLogout}
+              >
+                Logout
+              </button>
+            </li>
+          )}
         </ul>
       </nav>
       {currentPage === Page.home && <MainPage />}
-      {currentPage === Page.profile && <ProfilePage />}
-      {currentPage === Page.signup && <div>Sign Up Page Content</div>}
-      {currentPage === Page.login && <div>Login Page Content</div>}
+      {currentPage === Page.profile && isAuthenticated && <ProfilePage />}
+      {currentPage === "Sign Up" && <SignUpPage onLoginClick={() => setCurrentPage("Login")} />}
+      {currentPage === "Login" && <LoginPage onSignUpClick={() => setCurrentPage("Sign Up")} />}
     </div>
   );
 }
