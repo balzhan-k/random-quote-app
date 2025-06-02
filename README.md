@@ -34,7 +34,7 @@ Welcome to the **Random Quote App** — a fun and interactive **React** app that
 
 *Here is what the Random Quote App looks like in action:*
 
-<img src="![Screenshot 2025-06-02 222905](https://github.com/user-attachments/assets/4a0ced2f-cff9-47a9-bd9d-a620ef4c024c)
+<img src="(https://github.com/user-attachments/assets/4a0ced2f-cff9-47a9-bd9d-a620ef4c024c)
 " width="500" /> 
 
 
