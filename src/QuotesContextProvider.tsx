@@ -6,15 +6,20 @@ import {
   useState,
   ReactNode,
 } from "react";
-import { quotes as initialQuotes } from "./quotes";
 import { Quote } from "./types";
 import { quotesReducer, QuotesAction, QuotesActionType } from "./quotesReducer";
 
 // Context для данных цитат (основной список)
 export const QuotesContext = createContext<Quote[] | undefined>(undefined);
-export const QuotesDispatchContext = createContext<
-  React.Dispatch<QuotesAction> | undefined
->(undefined);
+
+interface QuotesDispatchContextType {
+  dispatch: React.Dispatch<QuotesAction>;
+  handleDeleteCreatedQuote: (quote: Quote) => void;
+}
+
+export const QuotesDispatchContext = createContext<QuotesDispatchContextType | undefined>(
+  undefined
+);
 
 // Context для состояния UI отображаемой цитаты
 interface QuoteUIContextType {
@@ -48,10 +53,10 @@ export const QuotesContextProvider = ({
 }) => {
   const [quotes, dispatch] = useReducer(
     quotesReducer,
-    initialQuotes,
+    [],
     () => {
       const saved = localStorage.getItem("quotes");
-      return saved ? JSON.parse(saved) : initialQuotes;
+      return saved ? JSON.parse(saved) : [];
     }
   );
 
@@ -119,9 +124,13 @@ export const QuotesContextProvider = ({
     });
   };
 
+  const handleDeleteCreatedQuote = (quoteToDelete: Quote) => {
+    dispatch({ type: QuotesActionType.DELETE_CREATED_QUOTE, payload: { quote: quoteToDelete.quote, author: quoteToDelete.author } });
+  };
+
   return (
     <QuotesContext.Provider value={quotes}>
-      <QuotesDispatchContext.Provider value={dispatch}>
+      <QuotesDispatchContext.Provider value={{ dispatch, handleDeleteCreatedQuote }}>
         <QuoteUIContext.Provider value={{ showQuote, currentIndex }}>
           <QuoteUIDispatchContext.Provider value={{ setShowQuote, setCurrentIndex }}>
             <LikedQuotesContext.Provider value={likedQuotes}>

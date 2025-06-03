@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ProfilePage } from "./pages/ProfilePage/index";
+import { MyCollectionPage } from "./pages/MyCollectionPage/index";
 import { MainPage } from "./pages/MainPage/index";
 import { SignUpPage } from "./pages/SignUpPage";
 import { LoginPage } from "./pages/LoginPage";
@@ -7,17 +7,17 @@ import { useAuth } from "./AuthContextProvider";
 
 enum Page {
   home = "Home",
-  profile = "Profile",
+  myCollection = "My Collection",
 }
 
-const allPages = Object.values(Page);
+const publicPages = [Page.home, Page.myCollection];
 
 function App() {
   const [currentPage, setCurrentPage] = useState<Page | string>(Page.home);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { isAuthenticated, logout } = useAuth();
 
-  const handlePageChange = (page: Page) => {
+  const handlePageChange = (page: Page | string) => {
     setCurrentPage(page);
     setIsMenuOpen(false);
   };
@@ -105,7 +105,7 @@ function App() {
               ></path>
             </svg>
           </button>
-          {allPages.map((page) => (
+          {publicPages.map((page) => (
             <li key={page}>
               <button
                 className="text-gray-700 font-semibold hover:text-blue-600 transition text-lg sm:text-base px-4 py-2 rounded-md w-full text-center"
@@ -119,9 +119,9 @@ function App() {
             <li key="login">
               <button
                 className="text-gray-700 font-semibold hover:text-blue-600 transition text-lg sm:text-base px-4 py-2 rounded-md w-full text-center"
-                onClick={() => setCurrentPage("Login")}
+                onClick={() => handlePageChange("Login")}
               >
-                Login
+                Log In
               </button>
             </li>
           )}
@@ -129,7 +129,7 @@ function App() {
             <li key="signup">
               <button
                 className="text-gray-700 font-semibold hover:text-blue-600 transition text-lg sm:text-base px-4 py-2 rounded-md w-full text-center"
-                onClick={() => setCurrentPage("Sign Up")}
+                onClick={() => handlePageChange("Sign Up")}
               >
                 Sign Up
               </button>
@@ -148,9 +148,9 @@ function App() {
         </ul>
       </nav>
       {currentPage === Page.home && <MainPage />}
-      {currentPage === Page.profile && isAuthenticated && <ProfilePage />}
-      {currentPage === "Sign Up" && <SignUpPage onLoginClick={() => setCurrentPage("Login")} />}
-      {currentPage === "Login" && <LoginPage onSignUpClick={() => setCurrentPage("Sign Up")} />}
+      {currentPage === Page.myCollection && <MyCollectionPage handlePageChange={handlePageChange} />}
+      {currentPage === "Sign Up" && <SignUpPage onLoginClick={() => setCurrentPage("Login")} onSignUpSuccess={() => handlePageChange(Page.home)} />}
+      {currentPage === "Login" && <LoginPage onSignUpClick={() => setCurrentPage("Sign Up")} onLoginSuccess={() => handlePageChange(Page.home)} />}
     </div>
   );
 }

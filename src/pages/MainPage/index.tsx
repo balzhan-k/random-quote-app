@@ -4,13 +4,15 @@ import { QuotesActionType } from "../../quotesReducer";
 import { QuoteCard } from "../../components/QuoteCard";
 import { CreateQuoteForm } from "../../components/CreateQuoteForm";
 import { Quote } from "../../types";
+import { useAuth } from "../../AuthContextProvider";
 
 export const MainPage = () => {
   const quotes = useQuotesContext() ?? [];
-  const dispatch = useQuotesDispatchContext();
+  const { dispatch } = useQuotesDispatchContext() ?? { dispatch: () => {} };
   const { showQuote, currentIndex } = useQuoteUIContext() ?? {showQuote: false, currentIndex: null};
   const { setShowQuote, setCurrentIndex } = useQuoteUIDispatchContext() ?? {setShowQuote: () => {}, setCurrentIndex: () => {}};
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const { isAuthenticated, uid } = useAuth();
 
   async function handleFetchQuote() {
     if (quotes.length === 0) {
@@ -22,7 +24,7 @@ export const MainPage = () => {
   }
 
   function handleClearQuotes() {
-    dispatch && dispatch({ type: QuotesActionType.SET_QUOTES, payload: [] });
+    dispatch && dispatch({ type: QuotesActionType.CLEAR_FETCHED_QUOTES });
     setShowQuote(false);
     setCurrentIndex(null);
   }
@@ -47,8 +49,12 @@ export const MainPage = () => {
           Fetch Quote
         </button>
         <button
-          className="border border-gray-300 text-gray-700 px-4 py-2 sm:px-6 sm:py-3 rounded-md font-semibold hover:bg-gray-50 transition text-sm sm:text-base w-full sm:w-auto"
-          onClick={() => setShowCreateForm(true)}
+          className={`border border-gray-300 text-gray-700 px-4 py-2 sm:px-6 sm:py-3 rounded-md font-semibold transition text-sm sm:text-base w-full sm:w-auto
+            ${!isAuthenticated ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-50'}
+          `}
+          onClick={() => isAuthenticated && setShowCreateForm(true)}
+          disabled={!isAuthenticated}
+          title={isAuthenticated ? '' : 'Sign up or log in to create quotes.'}
         >
           Create
         </button>
@@ -67,9 +73,9 @@ export const MainPage = () => {
         />
       )}
 
-      {showCreateForm && (
+      {isAuthenticated && showCreateForm && (
         <CreateQuoteForm
-          onCreate={handleAddQuote}
+          onCreate={(newQuote) => handleAddQuote({ ...newQuote, userId: uid || "" })}
           onCancel={() => setShowCreateForm(false)}
         />
       )}

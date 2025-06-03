@@ -1,83 +1,111 @@
-import React, { createContext, useReducer, useContext, ReactNode } from 'react';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { auth } from './firebase'; // путь к firebase.ts
+import React from 'react';
 
-// Define the authentication state type
 interface AuthState {
-  isAuthenticated: boolean;
   user: string | null;
   token: string | null;
+  isAuthenticated: boolean;
+  uid: string | null;
 }
 
-// Define action types
 type AuthAction =
-  | { type: 'LOGIN'; payload: { user: string; token: string } }
-  | { type: 'LOGOUT' }
-  | { type: 'SIGNUP'; payload: { user: string; token: string } };
+  | { type: 'LOGIN'; payload: { user: string; token: string; uid: string } }
+  | { type: 'SIGNUP'; payload: { user: string; token: string; uid: string } }
+  | { type: 'LOGOUT' };
 
-// Initial state
 const initialAuthState: AuthState = {
-  isAuthenticated: false,
   user: null,
   token: null,
+  isAuthenticated: false,
+  uid: null,
 };
 
-// Auth Reducer
 const authReducer = (state: AuthState, action: AuthAction): AuthState => {
   switch (action.type) {
     case 'LOGIN':
     case 'SIGNUP':
       return {
         ...state,
-        isAuthenticated: true,
         user: action.payload.user,
         token: action.payload.token,
+        isAuthenticated: true,
+        uid: action.payload.uid,
       };
     case 'LOGOUT':
       return {
         ...state,
-        isAuthenticated: false,
         user: null,
         token: null,
+        isAuthenticated: false,
+        uid: null,
       };
     default:
       return state;
   }
 };
 
-// Define the context type
 interface AuthContextType extends AuthState {
-  login: (user: string, token: string) => void;
-  logout: () => void;
-  signup: (user: string, token: string) => void;
+  login: (email: string, password: string) => Promise<void>;
+  signup: (email: string, password: string) => Promise<void>;
+  logout: () => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
 }
 
-// Create the Auth Context
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = React.createContext<AuthContextType | undefined>(undefined);
 
-// Auth Provider component
 interface AuthProviderProps {
-  children: ReactNode;
+  children: React.ReactNode;
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [state, dispatch] = useReducer(authReducer, initialAuthState);
+  const [state, dispatch] = React.useReducer(authReducer, initialAuthState);
 
-  const login = (user: string, token: string) => {
-    dispatch({ type: 'LOGIN', payload: { user, token } });
+  const login = async (email: string, password: string) => {
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const token = await userCredential.user.getIdToken();
+      const uid = userCredential.user.uid;
+      dispatch({ type: 'LOGIN', payload: { user: email, token, uid } });
+    } catch (error) {
+      console.error('Login error:', error);
+    }
   };
 
-  const logout = () => {
+  const signup = async (email: string, password: string) => {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const token = await userCredential.user.getIdToken();
+      const uid = userCredential.user.uid;
+      dispatch({ type: 'SIGNUP', payload: { user: email, token, uid } });
+    } catch (error) {
+      console.error('Signup error:', error);
+    }
+  };
+
+  const signInWithGoogle = async () => {
+    try {
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      const token = await user.getIdToken();
+      dispatch({ type: 'LOGIN', payload: { user: user.email || user.uid, token, uid: user.uid } });
+    } catch (error) {
+      console.error('Google Sign-In error:', error);
+    }
+  };
+
+  const logout = async () => {
+    await signOut(auth);
     dispatch({ type: 'LOGOUT' });
-  };
-
-  const signup = (user: string, token: string) => {
-    dispatch({ type: 'SIGNUP', payload: { user, token } });
   };
 
   const contextValue = {
     ...state,
     login,
-    logout,
     signup,
+    logout,
+    signInWithGoogle,
   };
 
   return (
@@ -87,11 +115,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   );
 };
 
-// Custom hook to use the Auth Context
 export const useAuth = () => {
-  const context = useContext(AuthContext);
+  const context = React.useContext(AuthContext);
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
-}; 
+};

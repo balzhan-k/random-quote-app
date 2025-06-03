@@ -7,15 +7,19 @@ import {
   useLikedQuotesContext,
   useLikedQuotesDispatchContext,
 } from "../../QuotesContextProvider";
+import { useAuth } from "../../AuthContextProvider";
 
 interface QuoteCardProps extends Quote {
   onProfilePage?: boolean;
+  isUserCreated?: boolean;
+  handleDeleteCreatedQuote?: (quote: Quote) => void;
 }
 
-export const QuoteCard = ({ quote, author, onProfilePage }: QuoteCardProps) => {
+export const QuoteCard = ({ quote, author, onProfilePage, isUserCreated, handleDeleteCreatedQuote }: QuoteCardProps) => {
   const likedQuotes = useLikedQuotesContext() ?? [];
   const { handleLike, handleDislike } = useLikedQuotesDispatchContext() ?? { handleLike: () => {}, handleDislike: () => {} };
   const isLiked = likedQuotes.some((q) => q.quote === quote);
+  const { isAuthenticated } = useAuth();
 
   return (
     <section className="bg-white p-6 sm:p-8 rounded-xl max-w-sm sm:max-w-lg md:max-w-xl mx-auto shadow-md border border-gray-200 mt-8 sm:mt-10">
@@ -25,8 +29,12 @@ export const QuoteCard = ({ quote, author, onProfilePage }: QuoteCardProps) => {
       <div className="flex items-center gap-2 mt-4">
         {!onProfilePage && (
           <button
-            className="p-2 sm:p-3 rounded-full border border-blue-700 text-blue-700 bg-blue-50 hover:bg-blue-100 transition flex items-center justify-center"
-            onClick={() => handleLike({ quote, author, likeCount: 0 }, !isLiked)}
+            className={`p-2 sm:p-3 rounded-full border border-blue-700 text-blue-700 bg-blue-50 transition flex items-center justify-center
+              ${!isAuthenticated ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-100'}
+            `}
+            onClick={() => isAuthenticated && handleLike({ quote, author, likeCount: 0 }, !isLiked)}
+            disabled={!isAuthenticated}
+            title={isAuthenticated ? '' : 'Sign up or log in to like quotes.'}
           >
             <FontAwesomeIcon
               icon={isLiked ? faThumbsUpSolid : faThumbsUpRegular}
@@ -41,7 +49,7 @@ export const QuoteCard = ({ quote, author, onProfilePage }: QuoteCardProps) => {
         {onProfilePage && (
           <button
             className="p-2 sm:p-3 rounded-full border border-red-700 text-red-700 bg-red-50 hover:bg-red-100 transition flex items-center justify-center ml-auto"
-            onClick={() => handleDislike({ quote, author, likeCount: 1 })}
+            onClick={() => isUserCreated && handleDeleteCreatedQuote ? handleDeleteCreatedQuote({ quote, author, likeCount: 0 }) : handleDislike({ quote, author, likeCount: 1 })}
           >
             <FontAwesomeIcon
               icon={faThumbsDownRegular}
