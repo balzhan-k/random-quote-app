@@ -184,7 +184,7 @@ export const SignUpPage: React.FC<SignUpPageProps> = ({ onLoginClick, onSignUpSu
         <div className="text-sm text-center">
           <p className="font-medium text-blue-600 hover:text-blue-500 cursor-pointer"
              onClick={onLoginClick}>
-            Already have an account? Sign In
+            Already have an account? Log In
           </p>
         </div>
       </div>
