@@ -24,7 +24,12 @@ function App() {
     <div className="min-h-screen bg-white text-gray-800 font-sans">
       <nav className="bg-white shadow-md py-4 px-4 flex justify-between items-center sm:px-6">
         <div className="flex items-center justify-between w-full sm:w-auto">
-          <span className="text-lg sm:text-xl font-bold cursor-pointer" onClick={() => handlePageChange(Page.home)}>Quote Fetcher</span>
+          <span
+            className="text-lg sm:text-xl font-bold cursor-pointer"
+            onClick={() => handlePageChange(Page.home)}
+          >
+            Quote Fetcher
+          </span>
           <button
             className="sm:hidden text-gray-700 focus:outline-none focus:text-blue-600"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -56,7 +61,6 @@ function App() {
           </button>
         </div>
 
-        {/* Backdrop for mobile menu */}
         {isMenuOpen && (
           <div
             className="fixed inset-0 bg-black bg-opacity-50 z-30 sm:hidden"
@@ -64,15 +68,14 @@ function App() {
           ></div>
         )}
 
-        {/* Mobile menu / Desktop navigation */}
         <ul
           className={`
             // Mobile styles
             fixed inset-y-0 right-0 w-[70%] bg-white shadow-lg z-40
             flex flex-col items-center justify-center space-y-6 pt-16
             transform transition-transform duration-300 ease-in-out
-            ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'}
-            ${!isMenuOpen && 'hidden'}
+            ${isMenuOpen ? "translate-x-0" : "translate-x-full"}
+            ${!isMenuOpen && "hidden"}
         
             // Override on sm and up (tablet and desktop)
             sm:static sm:translate-x-0 sm:flex sm:flex-row sm:space-x-4 sm:space-y-0 sm:w-auto sm:bg-transparent sm:shadow-none sm:pt-0 sm:items-center sm:justify-end sm:z-auto

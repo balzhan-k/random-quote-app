@@ -1,11 +1,10 @@
-import {
-  useLikedQuotesContext,
-} from "../../QuotesContextProvider";
+import { useQuotesContext } from "../../QuotesContextProvider";
 import { Quote } from "../../types";
 import { QuoteCard } from "../../components/QuoteCard";
 
 export const ProfilePage = () => {
-  const likedQuotes = useLikedQuotesContext() ?? [];
+  const { quotes } = useQuotesContext();
+  const likedQuotes = quotes.filter((quote: Quote) => quote.likeCount > 0);
 
   return (
     <main className="py-8 px-4 sm:py-16">

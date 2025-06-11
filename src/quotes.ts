@@ -1,2 +1,2 @@
-import {Quote} from './types';
-export const quotes : Quote[] = [];
+import { Quote } from "./types";
+export const quotes: Quote[] = [];
