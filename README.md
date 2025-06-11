@@ -1,20 +1,23 @@
 # 🌟 Random Quote App
 
-Welcome to the **Random Quote App** — a fun and interactive **React** app that displays random quotes and lets you like your favorites! 
+Welcome to the **Random Quote App** — a fun and interactive **React** app that displays random quotes and lets you manage your favorites!
 
 ---
 
 ## ✨ Features
 
-- 💬 **Random Quotes** — Get a fresh, inspirational quote every time you click "Next Quote."
-- ❤️ **Like Button** — Tap the "like" button to show your appreciation for a quote. 
-- 🔒 **Persistent Like Count** — Your likes are saved.
+- 💬 **Random Quotes** — Get a fresh, inspirational quote every time.
+- ❤️ **Like/Dislike Functionality** — Mark quotes as liked or disliked, with persistent storage.
+- 📝 **Quote Creation** — Easily add new quotes to the collection.
+- 🔐 **User Authentication** — Sign Up and Login pages for personalized experience.
+- 👤 **Profile Page** — View and manage your liked quotes.
+- ℹ️ **About Page** — Learn more about the application.
 
 ---
 
 ## 🛠️ Technologies Used
 
-<div align="left" style="display: flex; gap: 10px;">
+<div style="display: flex; gap: 10px; align-items: flex-start;">
   <img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React Badge" />
   <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript Badge" />
   <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS Badge" />
@@ -23,22 +26,6 @@ Welcome to the **Random Quote App** — a fun and interactive **React** app that
 
 ---
 
-## 🚀 How It Works
-
-1. 🌀 **Next Quote**: Click the button to see a new random quote.
-2. 👍 **Like Button**: Click the heart icon to add a like to the current quote. 
-
----
-
-## 📸 Preview
-
-*Here is what the Random Quote App looks like in action:*
-
-<img src="https://github.com/user-attachments/assets/4a0ced2f-cff9-47a9-bd9d-a620ef4c024c" width="500" /> 
-
-
-
----
 
 ## 🙌 Acknowledgments
 

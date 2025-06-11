@@ -4,7 +4,6 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { QuotesContextProvider } from "./QuotesContextProvider";
-import { QuoteIndexContextProvider } from "./QuoteIndexContextProvider";
 
 const rootElement = document.getElementById("root");
 if (!rootElement) throw new Error("Failed to find the root element");
@@ -12,9 +11,7 @@ const root = ReactDOM.createRoot(rootElement);
 root.render(
   <React.StrictMode>
     <QuotesContextProvider>
-      <QuoteIndexContextProvider>
-        <App />
-      </QuoteIndexContextProvider>
+      <App />
     </QuotesContextProvider>
   </React.StrictMode>
 );

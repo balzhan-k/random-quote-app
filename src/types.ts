@@ -3,3 +3,9 @@ export interface Quote {
   author: string;
   likeCount: number;
 }
+
+export interface QuotesState {
+  quotes: Quote[];
+  currentQuoteIndex: number | null;
+  showQuote: boolean;
+}

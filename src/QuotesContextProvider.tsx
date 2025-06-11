@@ -1,42 +1,74 @@
 import {
   createContext,
-  useState,
+  useReducer,
   useContext,
   useEffect,
-  Dispatch,
+  ReactNode,
 } from "react";
-import { quotes as initialQuotes } from "./quotes";
-import { ReactNode } from "react";
-import { Quote } from "./types";
+import { QuotesState } from "./types";
+import {
+  quotesReducer,
+  QuotesAction,
+  QuotesActionType,
+  initialState,
+} from "./quotesReducer";
 
-export const QuotesContext = createContext<Quote[] | undefined>(undefined);
+export const QuotesContext = createContext<QuotesState | undefined>(undefined);
 export const QuotesDispatchContext = createContext<
-  React.Dispatch<React.SetStateAction<Quote[]>> | undefined
+  React.Dispatch<QuotesAction> | undefined
 >(undefined);
 
-export const QuotesContextProvider = ({
-  children,
-}: {
-  children: ReactNode;
-}) => {
-  const [quotes, setQuotes] = useState(() => {
-    const saved = localStorage.getItem("quotes");
-    return saved ? JSON.parse(saved) : initialQuotes;
+export const QuotesContextProvider = ({ children }: { children: ReactNode }) => {
+  const [state, dispatch] = useReducer(quotesReducer, initialState, () => {
+    const saved = localStorage.getItem("appState");
+    return saved ? JSON.parse(saved) : initialState;
   });
 
-  // Save to localStorage whenever quotes change
   useEffect(() => {
-    localStorage.setItem("quotes", JSON.stringify(quotes));
-  }, [quotes]);
+    if (state.quotes.length === 0) {
+      const fetchInitialQuotes = async () => {
+        try {
+          const response = await fetch("/api/quotes");
+          const data = await response.json();
+          const formatted = data.map((q: any) => ({
+            quote: q.q,
+            author: q.a || "Unknown",
+            likeCount: 0,
+          }));
+          dispatch({ type: QuotesActionType.SET_QUOTES, payload: formatted });
+        } catch (error) {
+          console.error("Failed to fetch initial quotes:", error);
+        }
+      };
+      fetchInitialQuotes();
+    }
+  }, [state.quotes.length]);
+
+  useEffect(() => {
+    localStorage.setItem("appState", JSON.stringify(state));
+  }, [state]);
 
   return (
-    <QuotesContext.Provider value={quotes}>
-      <QuotesDispatchContext.Provider value={setQuotes}>
+    <QuotesContext.Provider value={state}>
+      <QuotesDispatchContext.Provider value={dispatch}>
         {children}
       </QuotesDispatchContext.Provider>
     </QuotesContext.Provider>
   );
 };
 
-export const useQuotesContext = () => useContext(QuotesContext);
-export const useQuotesDispatchContext = () => useContext(QuotesDispatchContext);
+export const useQuotesContext = () => {
+  const context = useContext(QuotesContext);
+  if (context === undefined) {
+    throw new Error("useQuotesContext must be used within an QuotesContextProvider");
+  }
+  return context;
+};
+
+    export const useQuotesDispatch = () => {
+  const context = useContext(QuotesDispatchContext);
+  if (context === undefined) {
+    throw new Error("useQuotesDispatch must be used within an QuotesContextProvider");
+  }
+  return context;
+};
