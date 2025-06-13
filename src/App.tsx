@@ -1,196 +1,63 @@
-import { useState } from "react";
-import { MyCollectionPage } from "./pages/MyCollectionPage/index";
-import { MainPage } from "./pages/MainPage/index";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
+
+//имортироуем сюда все нужные компоненты
+import { Navbar } from "./components/Navbar";
+import { MainPage } from "./pages/MainPage";
+import { MyCollectionPage } from "./pages/MyCollectionPage";
 import { SignUpPage } from "./pages/SignUpPage";
 import { LoginPage } from "./pages/LoginPage";
-import { ProfilePage } from "./pages/ProfilePage";
+
+//импортируем контекст авторизации для того чтобы использовать его в компонентах
 import { useAuth } from "./AuthContextProvider";
 
-enum Page {
-  home = "Home",
-  myCollection = "My Collection",
-  signUp = "Sign Up",
-  login = "Login",
-  profile = "Profile",
-}
-
-const publicPages = [Page.home];
-
 function App() {
-  const [currentPage, setCurrentPage] = useState<Page | string>(Page.home);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { isAuthenticated, logout } = useAuth();
-
-  const handlePageChange = (page: Page | string) => {
-    setCurrentPage(page);
-    setIsMenuOpen(false);
-  };
-
-  const handleLogout = () => {
-    logout();
-    setCurrentPage(Page.home);
-  };
+  const { uid } = useAuth();
+  const isAuthenticated = !!uid;
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-white text-gray-800 font-sans">
-      <nav className="bg-white shadow-md py-4 px-4 flex justify-between items-center sm:px-6">
-        <div className="flex items-center justify-between w-full sm:w-auto">
-          <span
-            className="text-lg sm:text-xl font-bold cursor-pointer"
-            onClick={() => handlePageChange(Page.home)}
-          >
-            Quote Fetcher
-          </span>
-          <button
-            className="sm:hidden text-gray-700 focus:outline-none focus:text-blue-600"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-label="Toggle navigation"
-          >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              {isMenuOpen ? (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M6 18L18 6M6 6l12 12"
-                ></path>
-              ) : (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4 6h16M4 12h16M4 18h16"
-                ></path>
-              )}
-            </svg>
-          </button>
-        </div>
+      <Navbar />
 
-        {isMenuOpen && (
-          <div
-            className="fixed inset-0 bg-black bg-opacity-50 z-30 sm:hidden"
-            onClick={() => setIsMenuOpen(false)}
-          ></div>
-        )}
+      <Routes>
+        <Route path="/" element={<MainPage />} />
 
-        <ul
-          className={`
-            // Mobile styles
-            fixed inset-y-0 right-0 w-[70%] bg-white shadow-lg z-40
-            flex flex-col items-center justify-center space-y-6 pt-16
-            transform transition-transform duration-300 ease-in-out
-            ${isMenuOpen ? "translate-x-0" : "translate-x-full"}
-            ${!isMenuOpen && "hidden"}
-        
-            // Override on sm and up (tablet and desktop)
-            sm:static sm:translate-x-0 sm:flex sm:flex-row sm:space-x-4 sm:space-y-0 sm:w-auto sm:bg-transparent sm:shadow-none sm:pt-0 sm:items-center sm:justify-end sm:z-auto
-          `}
-        >
-          <button
-            className="absolute top-4 right-4 text-gray-700 focus:outline-none sm:hidden"
-            onClick={() => setIsMenuOpen(false)}
-            aria-label="Close navigation"
-          >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M6 18L18 6M6 6l12 12"
-              ></path>
-            </svg>
-          </button>
-          {publicPages.map((page) => (
-            <li key={page}>
-              <button
-                className="text-gray-700 font-semibold hover:text-blue-600 transition text-lg sm:text-base px-4 py-2 rounded-md w-full text-center"
-                onClick={() => handlePageChange(page)}
-              >
-                {page}
-              </button>
-            </li>
-          ))}
-          {isAuthenticated && (
-            <li key={Page.myCollection}>
-              <button
-                className="text-gray-700 font-semibold hover:text-blue-600 transition text-lg sm:text-base px-4 py-2 rounded-md w-full text-center"
-                onClick={() => handlePageChange(Page.myCollection)}
-              >
-                My Collection
-              </button>
-            </li>
-          )}
-          {!isAuthenticated && (
-            <li key="login">
-              <button
-                className="text-gray-700 font-semibold hover:text-blue-600 transition text-lg sm:text-base px-4 py-2 rounded-md w-full text-center"
-                onClick={() => handlePageChange(Page.login)}
-              >
-                Log In
-              </button>
-            </li>
-          )}
-          {!isAuthenticated && (
-            <li key="signup">
-              <button
-                className="text-gray-700 font-semibold hover:text-blue-600 transition text-lg sm:text-base px-4 py-2 rounded-md w-full text-center"
-                onClick={() => handlePageChange(Page.signUp)}
-              >
-                Sign Up
-              </button>
-            </li>
-          )}
-          {isAuthenticated && (
-            <li key="profile">
-              <button
-                className="text-gray-700 font-semibold hover:text-blue-600 transition text-lg sm:text-base px-4 py-2 rounded-md w-full text-center"
-                onClick={() => handlePageChange(Page.profile)}
-              >
-                Profile
-              </button>
-            </li>
-          )}
-          {isAuthenticated && (
-            <li key="logout">
-              <button
-                className="text-gray-700 font-semibold hover:text-blue-600 transition text-lg sm:text-base px-4 py-2 rounded-md w-full text-center"
-                onClick={handleLogout}
-              >
-                Logout
-              </button>
-            </li>
-          )}
-        </ul>
-      </nav>
-      {currentPage === Page.home && <MainPage />}
-      {currentPage === Page.myCollection && (
-        <MyCollectionPage handlePageChange={handlePageChange} />
-      )}
-      {currentPage === "Sign Up" && (
-        <SignUpPage
-          onLoginClick={() => setCurrentPage(Page.login)}
-          onSignUpSuccess={() => handlePageChange(Page.home)}
+        <Route
+          path="/my-collection"
+          element={
+            isAuthenticated ? <MyCollectionPage /> : <Navigate to="/login" />
+          }
         />
-      )}
-      {currentPage === "Login" && (
-        <LoginPage
-          onSignUpClick={() => setCurrentPage(Page.signUp)}
-          onLoginSuccess={() => handlePageChange(Page.home)}
+
+        <Route
+          path="/signup"
+          element={
+            isAuthenticated ? (
+              <Navigate to="/" />
+            ) : (
+              <SignUpPage
+                onLoginClick={() => navigate("/login")}
+                onSignUpSuccess={() => navigate("/")}
+              />
+            )
+          }
         />
-      )}
-      {currentPage === Page.profile && <ProfilePage />}
+
+        <Route
+          path="/login"
+          element={
+            isAuthenticated ? (
+              <Navigate to="/" />
+            ) : (
+              <LoginPage
+                onSignUpClick={() => navigate("/signup")}
+                onLoginSuccess={() => navigate("/")}
+              />
+            )
+          }
+        />
+      </Routes>
+      <Route path="*" element={<Navigate to="/" />} />
     </div>
   );
 }

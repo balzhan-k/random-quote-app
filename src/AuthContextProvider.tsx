@@ -1,43 +1,44 @@
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import { auth } from './firebase'; // путь к firebase.ts
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut as firebaseSignOut,
+  GoogleAuthProvider,
+  signInWithPopup
+} from 'firebase/auth';
+
+import { auth } from './firebase'; // путь к твоему firebase.ts
 import React from 'react';
 
+// Тип состояния авторизации
 interface AuthState {
-  user: string | null;
-  token: string | null;
-  isAuthenticated: boolean;
+  email: string | null;
   uid: string | null;
 }
 
+// Типы действий
 type AuthAction =
-  | { type: 'LOGIN'; payload: { user: string; token: string; uid: string } }
-  | { type: 'SIGNUP'; payload: { user: string; token: string; uid: string } }
+  | { type: 'LOGIN'; payload: { email: string; uid: string } }
+  | { type: 'SIGNUP'; payload: { email: string; uid: string } }
   | { type: 'LOGOUT' };
 
+// Начальное состояние
 const initialAuthState: AuthState = {
-  user: null,
-  token: null,
-  isAuthenticated: false,
+  email: null,
   uid: null,
 };
 
+// Редьюсер
 const authReducer = (state: AuthState, action: AuthAction): AuthState => {
   switch (action.type) {
     case 'LOGIN':
     case 'SIGNUP':
       return {
-        ...state,
-        user: action.payload.user,
-        token: action.payload.token,
-        isAuthenticated: true,
+        email: action.payload.email,
         uid: action.payload.uid,
       };
     case 'LOGOUT':
       return {
-        ...state,
-        user: null,
-        token: null,
-        isAuthenticated: false,
+        email: null,
         uid: null,
       };
     default:
@@ -45,11 +46,12 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
   }
 };
 
+// Контекст с типами
 interface AuthContextType extends AuthState {
   login: (email: string, password: string) => Promise<void>;
   signup: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
-  signInWithGoogle: () => Promise<void>;
+  loginWithGoogle: () => Promise<void>;
 }
 
 export const AuthContext = React.createContext<AuthContextType | undefined>(undefined);
@@ -58,15 +60,15 @@ interface AuthProviderProps {
   children: React.ReactNode;
 }
 
+// Провайдер
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [state, dispatch] = React.useReducer(authReducer, initialAuthState);
 
   const login = async (email: string, password: string) => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const token = await userCredential.user.getIdToken();
-      const uid = userCredential.user.uid;
-      dispatch({ type: 'LOGIN', payload: { user: email, token, uid } });
+      const { email: userEmail, uid } = userCredential.user;
+      dispatch({ type: 'LOGIN', payload: { email: userEmail || '', uid } });
     } catch (error) {
       console.error('Login error:', error);
     }
@@ -75,37 +77,39 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const signup = async (email: string, password: string) => {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const token = await userCredential.user.getIdToken();
-      const uid = userCredential.user.uid;
-      dispatch({ type: 'SIGNUP', payload: { user: email, token, uid } });
+      const { email: userEmail, uid } = userCredential.user;
+      dispatch({ type: 'SIGNUP', payload: { email: userEmail || '', uid } });
     } catch (error) {
       console.error('Signup error:', error);
     }
   };
 
-  const signInWithGoogle = async () => {
+  const loginWithGoogle = async () => {
     try {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-      const token = await user.getIdToken();
-      dispatch({ type: 'LOGIN', payload: { user: user.email || user.uid, token, uid: user.uid } });
+      const { email: userEmail, uid } = result.user;
+      dispatch({ type: 'LOGIN', payload: { email: userEmail || '', uid } });
     } catch (error) {
-      console.error('Google Sign-In error:', error);
+      console.error('Google login error:', error);
     }
   };
 
   const logout = async () => {
-    await signOut(auth);
-    dispatch({ type: 'LOGOUT' });
+    try {
+      await firebaseSignOut(auth);
+      dispatch({ type: 'LOGOUT' });
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
   };
 
-  const contextValue = {
+  const contextValue: AuthContextType = {
     ...state,
     login,
     signup,
     logout,
-    signInWithGoogle,
+    loginWithGoogle,
   };
 
   return (
@@ -115,6 +119,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   );
 };
 
+// Хук для использования контекста
 export const useAuth = () => {
   const context = React.useContext(AuthContext);
   if (context === undefined) {
