@@ -1,13 +1,11 @@
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 
-//имортироуем сюда все нужные компоненты
 import { Navbar } from "./components/Navbar";
 import { MainPage } from "./pages/MainPage";
 import { MyCollectionPage } from "./pages/MyCollectionPage";
 import { SignUpPage } from "./pages/SignUpPage";
 import { LoginPage } from "./pages/LoginPage";
 
-//импортируем контекст авторизации для того чтобы использовать его в компонентах
 import { useAuth } from "./AuthContextProvider";
 
 function App() {
@@ -56,8 +54,8 @@ function App() {
             )
           }
         />
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
-      <Route path="*" element={<Navigate to="/" />} />
     </div>
   );
 }

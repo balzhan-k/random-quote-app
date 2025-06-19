@@ -6,28 +6,24 @@ import {
   signInWithPopup
 } from 'firebase/auth';
 
-import { auth } from './firebase'; // путь к твоему firebase.ts
+import { auth } from './firebase'; 
 import React from 'react';
 
-// Тип состояния авторизации
 interface AuthState {
   email: string | null;
   uid: string | null;
 }
 
-// Типы действий
 type AuthAction =
   | { type: 'LOGIN'; payload: { email: string; uid: string } }
   | { type: 'SIGNUP'; payload: { email: string; uid: string } }
   | { type: 'LOGOUT' };
 
-// Начальное состояние
 const initialAuthState: AuthState = {
   email: null,
   uid: null,
 };
 
-// Редьюсер
 const authReducer = (state: AuthState, action: AuthAction): AuthState => {
   switch (action.type) {
     case 'LOGIN':
@@ -46,7 +42,6 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
   }
 };
 
-// Контекст с типами
 interface AuthContextType extends AuthState {
   login: (email: string, password: string) => Promise<void>;
   signup: (email: string, password: string) => Promise<void>;
@@ -60,7 +55,6 @@ interface AuthProviderProps {
   children: React.ReactNode;
 }
 
-// Провайдер
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [state, dispatch] = React.useReducer(authReducer, initialAuthState);
 
@@ -119,7 +113,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   );
 };
 
-// Хук для использования контекста
 export const useAuth = () => {
   const context = React.useContext(AuthContext);
   if (context === undefined) {

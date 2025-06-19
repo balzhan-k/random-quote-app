@@ -11,7 +11,8 @@ enum Page {
 
 export const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { isAuthenticated, logout } = useAuth();
+  const { uid, logout } = useAuth();
+  const isAuthenticated = !!uid;
   const navigate = useNavigate();
 
   const handleNavigate = (page: Page) => {
@@ -42,7 +43,7 @@ export const Navbar = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white text-gray-800 font-sans">
+    <div className="bg-white text-gray-800 font-sans">
       <nav className="bg-white shadow-md py-4 px-4 flex justify-between items-center sm:px-6">
         <div className="flex items-center justify-between w-full sm:w-auto">
           <span

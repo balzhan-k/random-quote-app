@@ -2,7 +2,8 @@ export interface Quote {
   quote: string;
   author: string;
   likeCount: number;
-  userId?: string;
+  createdBy?: string;
+  likedBy?: string[];
 }
 
 export interface QuotesState {
