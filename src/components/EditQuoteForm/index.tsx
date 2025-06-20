@@ -1,33 +1,33 @@
 import { useState } from "react";
 import { Quote } from "../../types";
 import { useFirestoreQuotes } from "../../hooks/useFirestoreQuotes";
-import { useAuth } from "../../AuthContextProvider";
 
-interface CreateQuoteFormProps {
+interface EditQuoteFormProps {
+  quoteToEdit: Quote;
+  onSave: () => void;
   onCancel: () => void;
 }
 
-export const CreateQuoteForm = ({ onCancel }: CreateQuoteFormProps) => {
-  const [quoteText, setQuoteText] = useState("");
-  const [authorText, setAuthorText] = useState("");
-  const { addQuote } = useFirestoreQuotes();
-  const { uid } = useAuth();
+export const EditQuoteForm = ({
+  quoteToEdit,
+  onSave,
+  onCancel,
+}: EditQuoteFormProps) => {
+  const [quoteText, setQuoteText] = useState(quoteToEdit.quote);
+  const [authorText, setAuthorText] = useState(quoteToEdit.author);
+  const { updateQuote } = useFirestoreQuotes();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (quoteText.trim() && authorText.trim() && uid) {
-      addQuote({
+    if (quoteText.trim() && authorText.trim()) {
+      await updateQuote(quoteToEdit.id!, {
         quote: quoteText,
         author: authorText,
-        likeCount: 0,
-        likedBy: [],
-        createdBy: uid,
       });
-      setQuoteText("");
-      setAuthorText("");
+      onSave();
       onCancel();
     } else {
-      alert("Please enter both quote and author and ensure you are logged in.");
+      alert("Please enter both quote and author.");
     }
   };
 
@@ -35,7 +35,7 @@ export const CreateQuoteForm = ({ onCancel }: CreateQuoteFormProps) => {
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50 p-4">
       <div className="bg-white p-6 sm:p-8 rounded-lg shadow-xl w-full max-w-sm sm:max-w-md mx-auto relative">
         <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-gray-800 text-center">
-          Create New Quote
+          Edit Quote
         </h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-3 sm:mb-4">
@@ -75,7 +75,7 @@ export const CreateQuoteForm = ({ onCancel }: CreateQuoteFormProps) => {
               type="submit"
               className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition text-sm sm:text-base"
             >
-              Add Quote
+              Save Changes
             </button>
             <button
               type="button"

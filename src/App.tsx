@@ -9,9 +9,16 @@ import { LoginPage } from "./pages/LoginPage";
 import { useAuth } from "./AuthContextProvider";
 
 function App() {
-  const { uid } = useAuth();
-  const isAuthenticated = !!uid;
+  const { isAuthenticated, loading } = useAuth();
   const navigate = useNavigate();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white text-gray-800 font-sans">
+        <p className="text-xl font-semibold">Loading authentication...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white text-gray-800 font-sans">
