@@ -6,7 +6,7 @@ import {
 import { QuotesActionType } from "../../quotesReducer";
 import { QuoteCard } from "../../components/QuoteCard";
 import { CreateQuoteForm } from "../../components/CreateQuoteForm";
-import { Quote } from "../../types";
+
 import { useAuth } from "../../AuthContextProvider";
 
 export const MainPage = () => {
@@ -15,7 +15,7 @@ export const MainPage = () => {
     showQuote: false,
     currentQuoteIndex: null,
   };
-  const { dispatch, handleLikeQuote, handleUnlikeQuote } = useQuotesDispatch();
+  const { dispatch } = useQuotesDispatch();
   const { uid } = useAuth();
   const isAuthenticated = !!uid;
 
@@ -38,11 +38,6 @@ export const MainPage = () => {
     dispatch({ type: QuotesActionType.SET_QUOTES, payload: [] });
     dispatch({ type: QuotesActionType.SET_SHOW_QUOTE, payload: false });
     dispatch({ type: QuotesActionType.SET_CURRENT_INDEX, payload: null });
-  };
-
-  const handleAddQuote = (newQuote: Quote) => {
-    dispatch({ type: QuotesActionType.ADD_QUOTE, payload: newQuote });
-    setShowCreateForm(false);
   };
 
   const currentQuote =
@@ -101,9 +96,7 @@ export const MainPage = () => {
 
       {isAuthenticated && showCreateForm && (
         <CreateQuoteForm
-          onCreate={(newQuote) =>
-            handleAddQuote({ ...newQuote, createdBy: uid || "" })
-          }
+          onCreate={() => setShowCreateForm(false)}
           onCancel={() => setShowCreateForm(false)}
         />
       )}

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Quote } from "../../types";
 
 interface CreateQuoteFormProps {
-  onCreate: (quote: Quote) => void;
+  onCreate: () => void;
   onCancel: () => void;
 }
 
