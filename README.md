@@ -9,7 +9,7 @@ Welcome to the **Random Quote App** — a fun and interactive **React** app that
 - 💬 **Random Quotes** — Get a fresh, inspirational quote every time.
 - ❤️ **Like/Dislike Functionality** — Mark quotes as liked or disliked, with persistent storage.
 - 📝 **Quote Creation** — Easily add new quotes to the collection.
-- 🔐 **User Authentication** — Sign Up and Login pages for personalized experience.
+- 🔐 **User Authentication** — Sign Up and Log In pages for personalized experience.
 - 👤 **Profile Page** — View and manage your liked quotes.
 - ℹ️ **About Page** — Learn more about the application.
 
@@ -25,7 +25,6 @@ Welcome to the **Random Quote App** — a fun and interactive **React** app that
 </div>
 
 ---
-
 
 ## 🙌 Acknowledgments
 

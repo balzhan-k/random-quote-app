@@ -1,41 +1,52 @@
 import { useState } from "react";
-import { useQuotesContext, useQuotesDispatch } from "../../QuotesContextProvider";
+import {
+  useQuotesContext,
+  useQuotesDispatch,
+} from "../../QuotesContextProvider";
 import { QuotesActionType } from "../../quotesReducer";
 import { QuoteCard } from "../../components/QuoteCard";
 import { CreateQuoteForm } from "../../components/CreateQuoteForm";
 import { Quote } from "../../types";
+import { useAuth } from "../../AuthContextProvider";
 
 export const MainPage = () => {
-  const quotes = useQuotesContext() ?? [];
-  const dispatch = useQuotesDispatch();
-  const { showQuote, currentQuoteIndex } = useQuotesContext() ?? {
+  const { quotes, showQuote, currentQuoteIndex } = useQuotesContext() ?? {
+    quotes: [],
     showQuote: false,
     currentQuoteIndex: null,
-  }; 
+  };
+  const { dispatch, handleLikeQuote, handleUnlikeQuote } = useQuotesDispatch();
+  const { uid } = useAuth();
+  const isAuthenticated = !!uid;
+
   const [showCreateForm, setShowCreateForm] = useState(false);
 
-  async function handleFetchQuote() {
-    if (quotes.quotes.length === 0) {
+  const handleFetchQuote = () => {
+    if (quotes.length === 0) {
       console.log("No quotes loaded yet. Please wait or refresh.");
       return;
     }
+    const randomIndex = Math.floor(Math.random() * quotes.length);
     dispatch({ type: QuotesActionType.SET_SHOW_QUOTE, payload: true });
     dispatch({
       type: QuotesActionType.SET_CURRENT_INDEX,
-      payload: Math.floor(Math.random() * quotes.quotes.length),
+      payload: randomIndex,
     });
-  }
+  };
 
-  function handleClearQuotes() {
+  const handleClearQuotes = () => {
     dispatch({ type: QuotesActionType.SET_QUOTES, payload: [] });
     dispatch({ type: QuotesActionType.SET_SHOW_QUOTE, payload: false });
     dispatch({ type: QuotesActionType.SET_CURRENT_INDEX, payload: null });
-  }
+  };
 
   const handleAddQuote = (newQuote: Quote) => {
     dispatch({ type: QuotesActionType.ADD_QUOTE, payload: newQuote });
     setShowCreateForm(false);
   };
+
+  const currentQuote =
+    currentQuoteIndex !== null ? quotes[currentQuoteIndex] : null;
 
   return (
     <main className="text-center py-8 px-4 sm:py-16">
@@ -54,12 +65,22 @@ export const MainPage = () => {
         >
           Fetch Quote
         </button>
+
         <button
-          className="border border-gray-300 text-gray-700 px-4 py-2 sm:px-6 sm:py-3 rounded-md font-semibold hover:bg-gray-50 transition text-sm sm:text-base w-full sm:w-auto"
-          onClick={() => setShowCreateForm(true)}
+          className={`border border-gray-300 text-gray-700 px-4 py-2 sm:px-6 sm:py-3 rounded-md font-semibold transition text-sm sm:text-base w-full sm:w-auto
+            ${
+              !isAuthenticated
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:bg-gray-50"
+            }
+          `}
+          onClick={() => isAuthenticated && setShowCreateForm(true)}
+          disabled={!isAuthenticated}
+          title={isAuthenticated ? "" : "Sign up or log in to create quotes."}
         >
           Create
         </button>
+
         <button
           className="border border-gray-300 text-gray-700 px-4 py-2 sm:px-6 sm:py-3 rounded-md font-semibold hover:bg-gray-50 transition text-sm sm:text-base w-full sm:w-auto"
           onClick={handleClearQuotes}
@@ -67,19 +88,22 @@ export const MainPage = () => {
           Delete
         </button>
       </div>
-      {showQuote &&
-        currentQuoteIndex !== null &&
-        quotes.quotes[currentQuoteIndex] && (
-          <QuoteCard
-            quote={quotes.quotes[currentQuoteIndex].quote}
-            author={quotes.quotes[currentQuoteIndex].author}
-            likeCount={quotes.quotes[currentQuoteIndex].likeCount}
-          />
-        )}
 
-      {showCreateForm && (
+      {showQuote && currentQuote && (
+        <QuoteCard
+          quote={currentQuote.quote}
+          author={currentQuote.author}
+          likeCount={currentQuote.likeCount}
+          handleLikeQuote={handleLikeQuote}
+          handleUnlikeQuote={handleUnlikeQuote}
+        />
+      )}
+
+      {isAuthenticated && showCreateForm && (
         <CreateQuoteForm
-          onCreate={handleAddQuote}
+          onCreate={(newQuote) =>
+            handleAddQuote({ ...newQuote, createdBy: uid || "" })
+          }
           onCancel={() => setShowCreateForm(false)}
         />
       )}

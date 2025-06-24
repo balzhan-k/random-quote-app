@@ -1,122 +1,61 @@
-import { useState } from "react";
-import { ProfilePage } from "./pages/ProfilePage/index";
-import { MainPage } from "./pages/MainPage/index";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 
-enum Page {
-  home = "Home",
-  profile = "Profile",
-  signup = "Sign Up",
-  login = "Login",
-}
+import { Navbar } from "./components/Navbar";
+import { MainPage } from "./pages/MainPage";
+import { MyCollectionPage } from "./pages/MyCollectionPage";
+import { SignUpPage } from "./pages/SignUpPage";
+import { LoginPage } from "./pages/LoginPage";
 
-const allPages = Object.values(Page);
+import { useAuth } from "./AuthContextProvider";
 
 function App() {
-  const [currentPage, setCurrentPage] = useState<Page>(Page.home);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  const handlePageChange = (page: Page) => {
-    setCurrentPage(page);
-    setIsMenuOpen(false);
-  };
+  const { uid } = useAuth();
+  const isAuthenticated = !!uid;
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-white text-gray-800 font-sans">
-      <nav className="bg-white shadow-md py-4 px-4 flex justify-between items-center sm:px-6">
-        <div className="flex items-center justify-between w-full sm:w-auto">
-          <span
-            className="text-lg sm:text-xl font-bold cursor-pointer"
-            onClick={() => handlePageChange(Page.home)}
-          >
-            Quote Fetcher
-          </span>
-          <button
-            className="sm:hidden text-gray-700 focus:outline-none focus:text-blue-600"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-label="Toggle navigation"
-          >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              {isMenuOpen ? (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M6 18L18 6M6 6l12 12"
-                ></path>
-              ) : (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4 6h16M4 12h16M4 18h16"
-                ></path>
-              )}
-            </svg>
-          </button>
-        </div>
+      <Navbar />
 
-        {isMenuOpen && (
-          <div
-            className="fixed inset-0 bg-black bg-opacity-50 z-30 sm:hidden"
-            onClick={() => setIsMenuOpen(false)}
-          ></div>
-        )}
+      <Routes>
+        <Route path="/" element={<MainPage />} />
 
-        <ul
-          className={`
-            // Mobile styles
-            fixed inset-y-0 right-0 w-[70%] bg-white shadow-lg z-40
-            flex flex-col items-center justify-center space-y-6 pt-16
-            transform transition-transform duration-300 ease-in-out
-            ${isMenuOpen ? "translate-x-0" : "translate-x-full"}
-            ${!isMenuOpen && "hidden"}
-        
-            // Override on sm and up (tablet and desktop)
-            sm:static sm:translate-x-0 sm:flex sm:flex-row sm:space-x-4 sm:space-y-0 sm:w-auto sm:bg-transparent sm:shadow-none sm:pt-0 sm:items-center sm:justify-end sm:z-auto
-          `}
-        >
-          <button
-            className="absolute top-4 right-4 text-gray-700 focus:outline-none sm:hidden"
-            onClick={() => setIsMenuOpen(false)}
-            aria-label="Close navigation"
-          >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M6 18L18 6M6 6l12 12"
-              ></path>
-            </svg>
-          </button>
-          {allPages.map((page) => (
-            <li key={page}>
-              <button
-                className="text-gray-700 font-semibold hover:text-blue-600 transition text-lg sm:text-base px-4 py-2 rounded-md w-full text-center"
-                onClick={() => handlePageChange(page)}
-              >
-                {page}
-              </button>
-            </li>
-          ))}
-        </ul>
-      </nav>
-      {currentPage === Page.home && <MainPage />}
-      {currentPage === Page.profile && <ProfilePage />}
-      {currentPage === Page.signup && <div>Sign Up Page Content</div>}
-      {currentPage === Page.login && <div>Login Page Content</div>}
+        <Route
+          path="/my-collection"
+          element={
+            isAuthenticated ? <MyCollectionPage /> : <Navigate to="/login" />
+          }
+        />
+
+        <Route
+          path="/signup"
+          element={
+            isAuthenticated ? (
+              <Navigate to="/" />
+            ) : (
+              <SignUpPage
+                onLoginClick={() => navigate("/login")}
+                onSignUpSuccess={() => navigate("/")}
+              />
+            )
+          }
+        />
+
+        <Route
+          path="/login"
+          element={
+            isAuthenticated ? (
+              <Navigate to="/" />
+            ) : (
+              <LoginPage
+                onSignUpClick={() => navigate("/signup")}
+                onLoginSuccess={() => navigate("/")}
+              />
+            )
+          }
+        />
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
     </div>
   );
 }

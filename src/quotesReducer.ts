@@ -5,7 +5,9 @@ export enum QuotesActionType {
   ADD_QUOTE = "ADD_QUOTE",
   SET_CURRENT_INDEX = "SET_CURRENT_INDEX",
   SET_SHOW_QUOTE = "SET_SHOW_QUOTE",
-  TOGGLE_LIKE = "TOGGLE_LIKE",
+  DELETE_QUOTE = "DELETE_QUOTE",
+  LIKE_QUOTE = "LIKE_QUOTE",
+  UNLIKE_QUOTE = "UNLIKE_QUOTE",
 }
 
 export type QuotesAction =
@@ -13,16 +15,15 @@ export type QuotesAction =
   | { type: QuotesActionType.ADD_QUOTE; payload: Quote }
   | { type: QuotesActionType.SET_CURRENT_INDEX; payload: number | null }
   | { type: QuotesActionType.SET_SHOW_QUOTE; payload: boolean }
+  | { type: QuotesActionType.DELETE_QUOTE; payload: string }
   | {
-      type: QuotesActionType.TOGGLE_LIKE;
-      payload: { quoteIndex: number; shouldLike: boolean };
+      type: QuotesActionType.LIKE_QUOTE;
+      payload: { quoteIndex: number; userId: string };
+    }
+  | {
+      type: QuotesActionType.UNLIKE_QUOTE;
+      payload: { quoteIndex: number; userId: string };
     };
-
-export const initialState: QuotesState = {
-  quotes: [],
-  currentQuoteIndex: null,
-  showQuote: false,
-};
 
 export const quotesReducer = (
   state: QuotesState,
@@ -31,21 +32,61 @@ export const quotesReducer = (
   switch (action.type) {
     case QuotesActionType.SET_QUOTES:
       return { ...state, quotes: action.payload };
+
     case QuotesActionType.ADD_QUOTE:
       return { ...state, quotes: [...state.quotes, action.payload] };
+
     case QuotesActionType.SET_CURRENT_INDEX:
       return { ...state, currentQuoteIndex: action.payload };
+
     case QuotesActionType.SET_SHOW_QUOTE:
       return { ...state, showQuote: action.payload };
-    case QuotesActionType.TOGGLE_LIKE:
-      const { quoteIndex, shouldLike } = action.payload;
-      const updatedQuotes = [...state.quotes];
-      updatedQuotes[quoteIndex] = {
-        ...updatedQuotes[quoteIndex],
-        likeCount: shouldLike ? 1 : 0,
+
+    case QuotesActionType.DELETE_QUOTE:
+      return {
+        ...state,
+        quotes: state.quotes.filter((quote) => quote.quote !== action.payload),
       };
-      return { ...state, quotes: updatedQuotes };
+
+    case QuotesActionType.LIKE_QUOTE:
+      return {
+        ...state,
+        quotes: state.quotes.map((quote, index) =>
+          index === action.payload.quoteIndex &&
+          !(quote.likedBy || []).includes(action.payload.userId)
+            ? {
+                ...quote,
+                likeCount: quote.likeCount + 1,
+                likedBy: [...(quote.likedBy || []), action.payload.userId],
+              }
+            : quote
+        ),
+      };
+
+    case QuotesActionType.UNLIKE_QUOTE:
+      return {
+        ...state,
+        quotes: state.quotes.map((quote, index) =>
+          index === action.payload.quoteIndex &&
+          (quote.likedBy || []).includes(action.payload.userId)
+            ? {
+                ...quote,
+                likeCount: quote.likeCount - 1,
+                likedBy: (quote.likedBy || []).filter(
+                  (id) => id !== action.payload.userId
+                ),
+              }
+            : quote
+        ),
+      };
+
     default:
       return state;
   }
+};
+
+export const initialState: QuotesState = {
+  quotes: [],
+  currentQuoteIndex: null,
+  showQuote: false,
 };
