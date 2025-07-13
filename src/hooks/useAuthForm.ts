@@ -143,7 +143,7 @@ export const useAuthForm = (isSignUpForm: boolean = false) => {
           break;
       }
       setFieldError(field, errorMessage);
-      return !errorMessage; // Return true if valid, false if error
+      return !errorMessage; 
     },
     [isSignUpForm, state.password, setFieldError]
   );

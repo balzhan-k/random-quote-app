@@ -4,7 +4,7 @@ import { useAuth } from "../../AuthContextProvider";
 import { AuthFormContainer } from "../../components/common/AuthFormContainer";
 import { InputField } from "../../components/common/InputField";
 import { SocialSignInButton } from "../../components/common/SocialSignInButton";
-import { useAuthForm, AuthFormState } from "../../hooks/useAuthForm";
+import { useAuthForm } from "../../hooks/useAuthForm";
 
 interface SignUpPageProps {
   onLoginClick: () => void;
@@ -23,7 +23,7 @@ export const SignUpPage: React.FC<SignUpPageProps> = ({
     setFormError,
     validateField,
     validateForm,
-  } = useAuthForm(true); // Pass true for signup form
+  } = useAuthForm(true); 
   const {
     username,
     password,

@@ -15,7 +15,7 @@ import {
 } from "./quotesReducer";
 import { useAuth } from "./AuthContextProvider";
 
-interface QuotesDispatchContextType {
+export interface QuotesDispatchContextType {
   dispatch: React.Dispatch<QuotesAction>;
   handleLikeQuote: (quote: Quote) => void;
   handleUnlikeQuote: (quote: Quote) => void;
@@ -36,16 +36,14 @@ export const QuotesContextProvider = ({
     return saved ? JSON.parse(saved) : initialState;
   });
 
-  const { uid } = useAuth(); // Get uid here
+  const { uid } = useAuth(); 
 
-  // New handleLikeQuote function
   const handleLikeQuote = useCallback(
     (quoteToLike: Quote) => {
       const quoteIndex = state.quotes.findIndex(
         (q) => q.quote === quoteToLike.quote
       );
       if (quoteIndex !== -1 && uid) {
-        // Only dispatch if quote found and user is logged in
         dispatch({
           type: QuotesActionType.LIKE_QUOTE,
           payload: {
@@ -58,14 +56,12 @@ export const QuotesContextProvider = ({
     [state.quotes, uid, dispatch]
   );
 
-  // New handleUnlikeQuote function
   const handleUnlikeQuote = useCallback(
     (quoteToUnlike: Quote) => {
       const quoteIndex = state.quotes.findIndex(
         (q) => q.quote === quoteToUnlike.quote
       );
       if (quoteIndex !== -1 && uid) {
-        // Only dispatch if quote found and user is logged in
         dispatch({
           type: QuotesActionType.UNLIKE_QUOTE,
           payload: {
@@ -88,7 +84,7 @@ export const QuotesContextProvider = ({
             quote: q.q,
             author: q.a || "Unknown",
             likeCount: 0,
-            likedBy: [], // Initialize likedBy for new quotes
+            likedBy: [],
           }));
           dispatch({ type: QuotesActionType.SET_QUOTES, payload: formatted });
         } catch (error) {

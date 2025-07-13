@@ -3,21 +3,34 @@ import {
   signInWithEmailAndPassword,
   signOut as firebaseSignOut,
   GoogleAuthProvider,
-  signInWithPopup
-} from 'firebase/auth';
-
-import { auth } from './firebase'; 
-import React from 'react';
+  signInWithPopup,
+  onAuthStateChanged,
+} from "firebase/auth";
+import { auth } from "./firebase";
+import React, {
+  useReducer,
+  useState,
+  useEffect,
+  createContext,
+  FC,
+  useContext,
+} from "react";
 
 interface AuthState {
   email: string | null;
   uid: string | null;
 }
 
+enum AuthActionType {
+  LOGIN = "LOGIN",
+  SIGNUP = "SIGNUP",
+  LOGOUT = "LOGOUT",
+}
+
 type AuthAction =
-  | { type: 'LOGIN'; payload: { email: string; uid: string } }
-  | { type: 'SIGNUP'; payload: { email: string; uid: string } }
-  | { type: 'LOGOUT' };
+  | { type: AuthActionType.LOGIN; payload: { email: string; uid: string } }
+  | { type: AuthActionType.SIGNUP; payload: { email: string; uid: string } }
+  | { type: AuthActionType.LOGOUT };
 
 const initialAuthState: AuthState = {
   email: null,
@@ -26,13 +39,13 @@ const initialAuthState: AuthState = {
 
 const authReducer = (state: AuthState, action: AuthAction): AuthState => {
   switch (action.type) {
-    case 'LOGIN':
-    case 'SIGNUP':
+    case AuthActionType.LOGIN:
+    case AuthActionType.SIGNUP:
       return {
         email: action.payload.email,
         uid: action.payload.uid,
       };
-    case 'LOGOUT':
+    case AuthActionType.LOGOUT:
       return {
         email: null,
         uid: null,
@@ -47,34 +60,69 @@ interface AuthContextType extends AuthState {
   signup: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   loginWithGoogle: () => Promise<void>;
+  isAuthenticated: boolean;
+  loading: boolean;
 }
 
-export const AuthContext = React.createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType | undefined>(
+  undefined
+);
 
 interface AuthProviderProps {
   children: React.ReactNode;
 }
 
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [state, dispatch] = React.useReducer(authReducer, initialAuthState);
+export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
+  const [state, dispatch] = useReducer(authReducer, initialAuthState);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        dispatch({
+          type: AuthActionType.LOGIN,
+          payload: { email: user.email || "", uid: user.uid },
+        });
+      } else {
+        dispatch({ type: AuthActionType.LOGOUT });
+      }
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const login = async (email: string, password: string) => {
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       const { email: userEmail, uid } = userCredential.user;
-      dispatch({ type: 'LOGIN', payload: { email: userEmail || '', uid } });
+      dispatch({
+        type: AuthActionType.LOGIN,
+        payload: { email: userEmail || "", uid },
+      });
     } catch (error) {
-      console.error('Login error:', error);
+      console.error("Login error:", error);
     }
   };
 
   const signup = async (email: string, password: string) => {
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       const { email: userEmail, uid } = userCredential.user;
-      dispatch({ type: 'SIGNUP', payload: { email: userEmail || '', uid } });
+      dispatch({
+        type: AuthActionType.SIGNUP,
+        payload: { email: userEmail || "", uid },
+      });
     } catch (error) {
-      console.error('Signup error:', error);
+      console.error("Signup error:", error);
     }
   };
 
@@ -83,18 +131,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
       const { email: userEmail, uid } = result.user;
-      dispatch({ type: 'LOGIN', payload: { email: userEmail || '', uid } });
+      dispatch({
+        type: AuthActionType.LOGIN,
+        payload: { email: userEmail || "", uid },
+      });
     } catch (error) {
-      console.error('Google login error:', error);
+      console.error("Google login error:", error);
     }
   };
 
   const logout = async () => {
     try {
       await firebaseSignOut(auth);
-      dispatch({ type: 'LOGOUT' });
+      dispatch({ type: AuthActionType.LOGOUT });
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error("Logout error:", error);
     }
   };
 
@@ -104,19 +155,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     signup,
     logout,
     loginWithGoogle,
+    isAuthenticated: !!state.uid,
+    loading,
   };
 
   return (
-    <AuthContext.Provider value={contextValue}>
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   );
 };
 
 export const useAuth = () => {
-  const context = React.useContext(AuthContext);
+  const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };

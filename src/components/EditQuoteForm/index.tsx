@@ -1,21 +1,25 @@
 import { useState } from "react";
 import { Quote } from "../../types";
 import { useFirestoreQuotes } from "../../hooks/useFirestoreQuotes";
-import { useAuth } from "../../AuthContextProvider";
 
-interface CreateQuoteFormProps {
+interface EditQuoteFormProps {
+  quoteToEdit: Quote;
+  onSave: () => void;
   onCancel: () => void;
-  uid: string; 
 }
 
-export const CreateQuoteForm = ({ onCancel, uid }: CreateQuoteFormProps) => {
-  const [quoteText, setQuoteText] = useState("");
-  const [authorText, setAuthorText] = useState("");
-  const [quoteTextError, setQuoteTextError] = useState<string | null>(null); 
-  const [authorTextError, setAuthorTextError] = useState<string | null>(null); 
-  const { addQuote } = useFirestoreQuotes();
+export const EditQuoteForm = ({
+  quoteToEdit,
+  onSave,
+  onCancel,
+}: EditQuoteFormProps) => {
+  const [quoteText, setQuoteText] = useState(quoteToEdit.quote);
+  const [authorText, setAuthorText] = useState(quoteToEdit.author);
+  const [quoteTextError, setQuoteTextError] = useState<string | null>(null);
+  const [authorTextError, setAuthorTextError] = useState<string | null>(null);
+  const { updateQuote } = useFirestoreQuotes();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     let isValid = true;
@@ -34,15 +38,11 @@ export const CreateQuoteForm = ({ onCancel, uid }: CreateQuoteFormProps) => {
     }
 
     if (isValid) {
-      addQuote({
+      await updateQuote(quoteToEdit.id!, {
         quote: quoteText,
         author: authorText,
-        likeCount: 0,
-        likedBy: [],
-        createdBy: uid,
       });
-      setQuoteText("");
-      setAuthorText("");
+      onSave();
       onCancel();
     }
   };
@@ -51,7 +51,7 @@ export const CreateQuoteForm = ({ onCancel, uid }: CreateQuoteFormProps) => {
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50 p-4">
       <div className="bg-white p-6 sm:p-8 rounded-lg shadow-xl w-full max-w-sm sm:max-w-md mx-auto relative">
         <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-gray-800 text-center">
-          Create New Quote
+          Edit Quote
         </h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-3 sm:mb-4">
@@ -88,7 +88,7 @@ export const CreateQuoteForm = ({ onCancel, uid }: CreateQuoteFormProps) => {
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm sm:text-base"
               value={authorText}
               onChange={(e) => setAuthorText(e.target.value)}
-             
+            
             />
             {authorTextError && (
               <p className="text-red-500 text-xs italic mt-1">
@@ -101,7 +101,7 @@ export const CreateQuoteForm = ({ onCancel, uid }: CreateQuoteFormProps) => {
               type="submit"
               className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition text-sm sm:text-base"
             >
-              Add Quote
+              Save Changes
             </button>
             <button
               type="button"
