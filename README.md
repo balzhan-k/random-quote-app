@@ -26,6 +26,13 @@ Welcome to the **Random Quote App** — a fun and interactive **React** app that
 
 ---
 
+## Preview
+![Screenshot 2025-07-13 131828](https://github.com/user-attachments/assets/90fe39e1-495f-40b6-a802-cce873dd7b67)
+
+
+
+---
+
 ## 🙌 Acknowledgments
 
 This project is part of my **front-end development journey**. 💪 I'm constantly improving and looking forward to building more dynamic, interactive applications like this one. 🚀
