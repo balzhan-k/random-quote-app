@@ -2,13 +2,7 @@ import { Quote } from "../../types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faThumbsUp as faThumbsUpSolid } from "@fortawesome/free-solid-svg-icons";
 import { faThumbsUp as faThumbsUpRegular } from "@fortawesome/free-regular-svg-icons";
-import { faThumbsDown as faThumbsDownRegular } from "@fortawesome/free-regular-svg-icons";
-import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
-import {
-  useQuotesContext,
-  useQuotesDispatch,
-} from "../../QuotesContextProvider";
-import { QuotesActionType } from "../../quotesReducer";
+import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";  
 import { useAuth } from "../../AuthContextProvider";
 import { useFirestoreQuotes } from "../../hooks/useFirestoreQuotes";
 import { useState } from "react";
@@ -30,13 +24,10 @@ export const QuoteCard = ({
 }: QuoteCardProps) => {
   const { uid, isAuthenticated } = useAuth();
   const { updateQuote, deleteQuote } = useFirestoreQuotes();
-  const { dispatch } = useQuotesDispatch();
-  const { quotes } = useQuotesContext();
   const { firestoreQuotes, addQuote } = useFirestoreQuotes();
 
   const [showEditForm, setShowEditForm] = useState(false);
 
-  // Вычисляем статус лайка на основе firestoreQuotes
   const currentQuoteInFirestore = firestoreQuotes.find(
     (q) => q.quote === quote && q.author === author
   );

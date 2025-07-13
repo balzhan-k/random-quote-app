@@ -15,19 +15,35 @@ export const EditQuoteForm = ({
 }: EditQuoteFormProps) => {
   const [quoteText, setQuoteText] = useState(quoteToEdit.quote);
   const [authorText, setAuthorText] = useState(quoteToEdit.author);
+  const [quoteTextError, setQuoteTextError] = useState<string | null>(null);
+  const [authorTextError, setAuthorTextError] = useState<string | null>(null);
   const { updateQuote } = useFirestoreQuotes();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (quoteText.trim() && authorText.trim()) {
+
+    let isValid = true;
+
+    setQuoteTextError(null);
+    setAuthorTextError(null);
+
+    if (!quoteText.trim()) {
+      setQuoteTextError("Quote cannot be empty.");
+      isValid = false;
+    }
+
+    if (!authorText.trim()) {
+      setAuthorTextError("Author cannot be empty.");
+      isValid = false;
+    }
+
+    if (isValid) {
       await updateQuote(quoteToEdit.id!, {
         quote: quoteText,
         author: authorText,
       });
       onSave();
       onCancel();
-    } else {
-      alert("Please enter both quote and author.");
     }
   };
 
@@ -51,8 +67,13 @@ export const EditQuoteForm = ({
               rows={4}
               value={quoteText}
               onChange={(e) => setQuoteText(e.target.value)}
-              required
+            
             ></textarea>
+            {quoteTextError && (
+              <p className="text-red-500 text-xs italic mt-1">
+                {quoteTextError}
+              </p>
+            )}
           </div>
           <div className="mb-4 sm:mb-6">
             <label
@@ -67,8 +88,13 @@ export const EditQuoteForm = ({
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm sm:text-base"
               value={authorText}
               onChange={(e) => setAuthorText(e.target.value)}
-              required
+            
             />
+            {authorTextError && (
+              <p className="text-red-500 text-xs italic mt-1">
+                {authorTextError}
+              </p>
+            )}
           </div>
           <div className="flex items-center justify-between">
             <button

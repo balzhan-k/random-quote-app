@@ -53,6 +53,7 @@ export const MainPage = () => {
 
       {showQuote && currentQuote && (
         <QuoteCard
+          id={currentQuote.id}
           quote={currentQuote.quote}
           author={currentQuote.author}
           likeCount={currentQuote.likeCount}

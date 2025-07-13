@@ -5,17 +5,35 @@ import { useAuth } from "../../AuthContextProvider";
 
 interface CreateQuoteFormProps {
   onCancel: () => void;
+  uid: string; 
 }
 
-export const CreateQuoteForm = ({ onCancel }: CreateQuoteFormProps) => {
+export const CreateQuoteForm = ({ onCancel, uid }: CreateQuoteFormProps) => {
   const [quoteText, setQuoteText] = useState("");
   const [authorText, setAuthorText] = useState("");
+  const [quoteTextError, setQuoteTextError] = useState<string | null>(null); 
+  const [authorTextError, setAuthorTextError] = useState<string | null>(null); 
   const { addQuote } = useFirestoreQuotes();
-  const { uid } = useAuth();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (quoteText.trim() && authorText.trim() && uid) {
+
+    let isValid = true;
+
+    setQuoteTextError(null);
+    setAuthorTextError(null);
+
+    if (!quoteText.trim()) {
+      setQuoteTextError("Quote cannot be empty.");
+      isValid = false;
+    }
+
+    if (!authorText.trim()) {
+      setAuthorTextError("Author cannot be empty.");
+      isValid = false;
+    }
+
+    if (isValid) {
       addQuote({
         quote: quoteText,
         author: authorText,
@@ -26,8 +44,6 @@ export const CreateQuoteForm = ({ onCancel }: CreateQuoteFormProps) => {
       setQuoteText("");
       setAuthorText("");
       onCancel();
-    } else {
-      alert("Please enter both quote and author and ensure you are logged in.");
     }
   };
 
@@ -51,8 +67,13 @@ export const CreateQuoteForm = ({ onCancel }: CreateQuoteFormProps) => {
               rows={4}
               value={quoteText}
               onChange={(e) => setQuoteText(e.target.value)}
-              required
+            
             ></textarea>
+            {quoteTextError && (
+              <p className="text-red-500 text-xs italic mt-1">
+                {quoteTextError}
+              </p>
+            )}
           </div>
           <div className="mb-4 sm:mb-6">
             <label
@@ -67,8 +88,13 @@ export const CreateQuoteForm = ({ onCancel }: CreateQuoteFormProps) => {
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm sm:text-base"
               value={authorText}
               onChange={(e) => setAuthorText(e.target.value)}
-              required
+             
             />
+            {authorTextError && (
+              <p className="text-red-500 text-xs italic mt-1">
+                {authorTextError}
+              </p>
+            )}
           </div>
           <div className="flex items-center justify-between">
             <button

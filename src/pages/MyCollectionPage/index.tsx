@@ -121,7 +121,10 @@ export const MyCollectionPage = () => {
             </div>
           )}
           {showCreateForm && (
-            <CreateQuoteForm onCancel={() => setShowCreateForm(false)} />
+            <CreateQuoteForm
+              uid={uid}
+              onCancel={() => setShowCreateForm(false)}
+            />
           )}
         </>
       )}

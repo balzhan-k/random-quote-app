@@ -11,6 +11,11 @@ import {
 import { db } from "../firebase";
 import { Quote } from "../types";
 
+interface FirebaseOperationResult {
+  success: boolean;
+  error?: string;
+}
+
 export const useFirestoreQuotes = () => {
   const [firestoreQuotes, setFirestoreQuotes] = useState<Quote[]>([]);
 
@@ -33,38 +38,56 @@ export const useFirestoreQuotes = () => {
     return () => unsubscribe();
   }, []);
 
-  const addQuote = useCallback(async (newQuote: Omit<Quote, "id">) => {
-    try {
-      const quotesCollection = collection(db, "quotes");
-      await addDoc(quotesCollection, newQuote);
-      console.log("Quote added successfully");
-    } catch (error) {
-      console.error("Error adding quote: ", error);
-    }
-  }, []);
-
-  const updateQuote = useCallback(
-    async (id: string, updatedFields: Partial<Quote>) => {
+  const addQuote = useCallback(
+    async (newQuote: Omit<Quote, "id">): Promise<FirebaseOperationResult> => {
       try {
-        const quoteRef = doc(db, "quotes", id);
-        await updateDoc(quoteRef, updatedFields);
-        console.log("Quote updated successfully");
-      } catch (error) {
-        console.error("Error updating quote: ", error);
+        const quotesCollection = collection(db, "quotes");
+        await addDoc(quotesCollection, newQuote);
+        return { success: true };
+      } catch (error: any) {
+        return {
+          success: false,
+          error: error.message || "Failed to add quote",
+        };
       }
     },
     []
   );
 
-  const deleteQuote = useCallback(async (id: string) => {
-    try {
-      const quoteRef = doc(db, "quotes", id);
-      await deleteDoc(quoteRef);
-      console.log("Quote deleted successfully");
-    } catch (error) {
-      console.error("Error deleting quote: ", error);
-    }
-  }, []);
+  const updateQuote = useCallback(
+    async (
+      id: string,
+      updatedFields: Partial<Quote>
+    ): Promise<FirebaseOperationResult> => {
+      try {
+        const quoteRef = doc(db, "quotes", id);
+        await updateDoc(quoteRef, updatedFields);
+        return { success: true };
+      } catch (error: any) {
+        return {
+          success: false,
+          error: error.message || "Failed to update quote",
+        };
+      }
+    },
+    []
+  );
+
+  const deleteQuote = useCallback(
+    async (id: string): Promise<FirebaseOperationResult> => {
+      try {
+        const quoteRef = doc(db, "quotes", id);
+        await deleteDoc(quoteRef);
+        return { success: true };
+      } catch (error: any) {
+        return {
+          success: false,
+          error: error.message || "Failed to delete quote",
+        };
+      }
+    },
+    []
+  );
 
   return {
     firestoreQuotes,
